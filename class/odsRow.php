@@ -1,5 +1,8 @@
 <?php
-
+/*-
+ * Copyright (c) 2009 Laurent VUIBERT
+ * License : GNU Lesser General Public License v3
+ */
 
 class odsRow {
 	private $styleName;

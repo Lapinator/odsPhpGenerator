@@ -1,4 +1,8 @@
 <?php
+/*-
+ * Copyright (c) 2009 Laurent VUIBERT
+ * License : GNU Lesser General Public License v3
+ */
 
 require_once("class/odsFontFace.php");
 require_once("class/odsStyle.php");
