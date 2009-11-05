@@ -37,7 +37,7 @@ abstract class odsStyle {
 	abstract protected function getType();
 	
 	protected function randString() {
-		return md5(time.rand().$this->getType());
+		return md5(time().rand().$this->getType());
 	}
 	
 }

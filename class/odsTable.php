@@ -63,8 +63,8 @@ class odsTable {
 		$this->setPositionBottom(1);
 	}
 	
-	public function addRow($odsRow) {
-		array_push($this->rows,$odsRow);
+	public function addRow($odsTableRow) {
+		array_push($this->rows,$odsTableRow);
 	}
 	
 	public function setCursorPositionX($cursorPositionX) {
@@ -124,7 +124,7 @@ class odsTable {
 				foreach($this->rows as $row) 
 					$table_table->appendChild($row->getContent($ods,$dom));
 			} else {
-				$row = new odsRow();
+				$row = new odsTableRow();
 				$table_table->appendChild($row->getContent($ods,$dom));
 			}
 				

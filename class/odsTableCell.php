@@ -4,7 +4,7 @@
  * License : GNU Lesser General Public License v3
  */
 
-abstract class odsCell {
+abstract class odsTableCell {
 	protected $styleName;
 	
 	abstract protected function __construct();
@@ -19,7 +19,7 @@ abstract class odsCell {
 	}
 }
 
-class odsCellEmpty extends odsCell {
+class odsTableCellEmpty extends odsTableCell {
 	
 	public function __construct(odsStyleTableCell $odsStyleTableCell = null) {
 		$this->styleName = $odsStyleTableCell;
@@ -32,7 +32,7 @@ class odsCellEmpty extends odsCell {
 	}
 }
 
-class odsCellString extends odsCell {
+class odsTableCellString extends odsTableCell {
 	public $value;
 	public $styleName;
 	
@@ -52,10 +52,10 @@ class odsCellString extends odsCell {
 	}
 }
 
-class odsCellStringEmail extends odsCellString {
+class odsTableCellStringEmail extends odsTableCellString {
 	
 	public function getContent(ods $ods, DOMDocument $dom) {
-		$table_table_cell = odsCell::getContent($ods,$dom);
+		$table_table_cell = odsTableCell::getContent($ods,$dom);
 			$table_table_cell->setAttribute("office:value-type", "string");
 			
 			// text:p
@@ -70,10 +70,10 @@ class odsCellStringEmail extends odsCellString {
 	}
 }
 
-class odsCellStringUrl extends odsCellString {
+class odsTableCellStringUrl extends odsTableCellString {
 	
 	public function getContent(ods $ods, DOMDocument $dom) {
-		$table_table_cell = odsCell::getContent($ods,$dom);
+		$table_table_cell = odsTableCell::getContent($ods,$dom);
 			$table_table_cell->setAttribute("office:value-type", "string");
 			
 			// text:p
@@ -90,7 +90,7 @@ class odsCellStringUrl extends odsCellString {
 
 
 
-class odsCellFloat extends odsCell {
+class odsTableCellFloat extends odsTableCell {
 	public $value;
 	public $styleName;
 	
@@ -111,7 +111,7 @@ class odsCellFloat extends odsCell {
 	}
 }
 
-class odsCellCurrency extends odsCell {
+class odsTableCellCurrency extends odsTableCell {
 	public $value;
 	public $styleName;
 	public $currency;

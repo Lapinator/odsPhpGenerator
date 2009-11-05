@@ -4,7 +4,7 @@
  * License : GNU Lesser General Public License v3
  */
 
-class odsRow {
+class odsTableRow {
 	private $styleName;
 	private $cells;
 	
@@ -14,8 +14,8 @@ class odsRow {
 		$this->cells                           = array();
 	}
 	
-	public function addCell($odsCell) {
-		array_push($this->cells,$odsCell);
+	public function addCell($odsTableCell) {
+		array_push($this->cells,$odsTableCell);
 	}
 	
 	public function getContent(ods $ods, DOMDocument $dom) {
@@ -26,7 +26,7 @@ class odsRow {
 				foreach($this->cells as $cell) 
 					$table_table_row->appendChild($cell->getContent($ods, $dom));
 			} else {
-				$cell = new odsCellEmpty();
+				$cell = new odsTableCellEmpty();
 				$table_table_row->appendChild($cell->getContent($ods, $dom));
 			}
 		
