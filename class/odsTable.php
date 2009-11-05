@@ -21,7 +21,7 @@ class odsTable {
 	private	$positionBottom;
 	
 	
-	private $tableColumn;
+	private $tableColumns;
 	private $rows;
 	
 	public function __construct($name, $odsStyleTable = null) {
@@ -41,7 +41,7 @@ class odsTable {
 		$this->positionTop                  = 0;
 		$this->positionBottom               = 0;
 		
-		$this->tableColumn                  = array();
+		$this->tableColumns                 = array();
 		$this->rows                         = array();
 	}
 	
@@ -65,6 +65,10 @@ class odsTable {
 	
 	public function addRow($odsTableRow) {
 		array_push($this->rows,$odsTableRow);
+	}
+	
+	public function addTableColumn($odsTableColumn) {
+		array_push($this->tableColumns, $odsTableColumn);
 	}
 	
 	public function setCursorPositionX($cursorPositionX) {
@@ -112,13 +116,14 @@ class odsTable {
 			$table_table->setAttribute("table:name", $this->name);
 			$table_table->setAttribute("table:style-name", $this->styleName);
 			$table_table->setAttribute("table:print", $this->print);
-		
-			// FIXME: table-column
-			$table_table_column = $dom->createElement('table:table-column');
-				$table_table_column->setAttribute("table:style-name", 'co1');
-				$table_table_column->setAttribute("table:number-columns-repeated", "1024");
-				$table_table_column->setAttribute("table:default-cell-style-name", "Default");
-				$table_table->appendChild($table_table_column);
+			
+			if(count($this->tableColumns)) {
+				foreach($this->tableColumns as $tableColumn) 
+					$table_table->appendChild($tableColumn->getContent($ods,$dom));
+			} else {
+				$column = new odsTableColumn($ods->getStyleByName('co1'));
+				$table_table->appendChild($column->getContent($ods,$dom));
+			}
 
 			if(count($this->rows)) {
 				foreach($this->rows as $row) 

@@ -67,6 +67,14 @@ class odsStyleTableColumn extends odsStyle {
 	public function getType() {
 		return 'odsStyleTableColumn';
 	}
+	
+	public function setColumnWidth($columnWidth) {
+		$this->columnWidth = $columnWidth;
+	}
+	
+	public function setBreakBefore($breakBefore) {
+		$this->breakBefore = $breakBefore;
+	}
 }
 
 class odsStyleTable extends odsStyle {

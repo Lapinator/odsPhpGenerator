@@ -7,8 +7,9 @@
 require_once("class/odsFontFace.php");
 require_once("class/odsStyle.php");
 require_once("class/odsTable.php");
-require_once("class/odsRow.php");
-require_once("class/odsCell.php");
+require_once("class/odsTableColumn.php");
+require_once("class/odsTableRow.php");
+require_once("class/odsTableCell.php");
 
 class ods {
 	private $defaultTable;
