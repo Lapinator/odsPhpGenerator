@@ -113,8 +113,6 @@ class odsStyleTableRow extends odsStyle {
 	
 	public function __construct($name = null) {
 		parent::__construct($name, "table-row");
-		$this->name                = $name;
-		$this->family              = "table-row";
 		$this->rowHeight           = "0.52cm";
 		$this->breakBefore         = "auto";
 		$this->useOptimalRowHeight = "true";
@@ -289,6 +287,97 @@ class odsStyleTableCell extends odsStyle {
 		return 'odsStyleTableCell';
 	}
 }
+
+class odsStyleGraphic extends odsStyle {
+	private $stroke;    // none
+	private $fill;      // none
+ 	private $luminance; // 0%
+ 	private $contrast;  // 0%
+ 	private $gamma;     // 100%
+ 	private $red;       // 0%
+ 	private $green;     // 0%
+ 	private $blue;      // 0%  
+ 	private $opacity;   // 100%
+
+	public function __construct($name = null) {
+		parent::__construct($name, "graphic");
+		$this->stroke    = "none";
+		$this->fill      = "none";
+		$this->luminance = "0%";
+		$this->contrast  = "0%";
+		$this->gamma     = "100%";
+		$this->red       = "0%";
+		$this->green     = "0%";
+		$this->blue      = "0%";
+		$this->opacity   = "100%";
+	}
+	
+	public function setStroke($stroke) {
+		$this->stroke = $stroke;
+	}
+	
+	public function setFill($fill) {
+		$this->fill = $fill;
+	}
+	
+	public function setLuminance($luminance) {
+		$this->luminance = $luminance;
+	}
+	
+	public function setContrast($contrast) {
+		$this->contrast = $contrast;
+	}
+	
+	public function setGamma($gamma) {
+		$this->gamma = $gamma;
+	}
+	
+	public function setRed($red) {
+		$this->red = $red;
+	}
+	
+	public function setGreen($green) {
+		$this->green = $green;
+	}
+	
+	public function setBlue($blue) {
+		$this->blue = $blue;
+	}
+	
+	public function setOpacity($opacity) {
+		$this->opacity = $opacity;
+	}
+	
+	public function getContent(ods $ods,DOMDocument $dom) {
+		$style_style = parent::getContent($ods,$dom);
+		
+			// style:table-row-properties
+			$style_graphic_properties = $dom->createElement('style:graphic-properties');
+				$style_graphic_properties->setAttribute("draw:stroke",        $this->stroke);
+				$style_graphic_properties->setAttribute("draw:fill",          $this->fill);
+				$style_graphic_properties->setAttribute("draw:textarea-horizontal-align", "center");
+				$style_graphic_properties->setAttribute("draw:textarea-vertical-align", "middle");
+				$style_graphic_properties->setAttribute("draw:color-mode", "standard");
+				$style_graphic_properties->setAttribute("draw:luminance",     $this->luminance);
+				$style_graphic_properties->setAttribute("draw:contrast",      $this->contrast);
+				$style_graphic_properties->setAttribute("draw:gamma",         $this->gamma);
+				$style_graphic_properties->setAttribute("draw:red",           $this->red);
+				$style_graphic_properties->setAttribute("draw:green",         $this->green);
+				$style_graphic_properties->setAttribute("draw:blue",          $this->blue);
+				$style_graphic_properties->setAttribute("fo:clip", "rect(0cm, 0cm, 0cm, 0cm)");
+				$style_graphic_properties->setAttribute("draw:image-opacity", $this->opacity);
+				$style_graphic_properties->setAttribute("style:mirror", "none");
+				$style_style->appendChild($style_graphic_properties);
+				
+		return $style_style;
+	}
+
+	public function getType() {
+		return 'odsStyleGraphic';
+	}
+	
+}
+
 
 abstract class odsStyleMoney extends odsStyle {
 	//abstract protected function __construct();

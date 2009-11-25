@@ -18,6 +18,7 @@ class ods {
 	private $fontFaces;
 	private $styles;
 	private $tmpStyles;
+	private $tmpPictures;
 	private $tables;
 	
 	public function __construct() {
@@ -54,6 +55,12 @@ class ods {
 		$this->tmpStyles[$odsStyle->getName()] = $odsStyle;
 	}
 	
+	public function addTmpPictures($file) {
+		if(in_array($file,$this->tmpPictures)) return;
+		$this->tmpPictures[$file] = "Pictures/".md5(time().rand()).'.jpg';
+		return $this->tmpPictures[$file];
+	}
+	
 	public function getStyleByName($name) {
 		if(isset($this->styles[$name])) return $this->styles[$name];
 		if(isset($this->tmpStyles[$name])) return $this->tmpStyles[$name];
@@ -83,6 +90,7 @@ class ods {
 	
 	public function getContent() {
 		$this->tmpStyles = array();
+		$this->tmpPictures = array();
 		
 		$dom = new DOMDocument('1.0', 'UTF-8');
 		$root = $dom->createElement('office:document-content');
@@ -555,6 +563,43 @@ class ods {
 						$style_text_properties->setAttribute("style:country-complex", "none");
 						$style_default_style->appendChild($style_text_properties);
 
+				$style_default_style = $dom->createElement('style:default-style');
+					$style_default_style->setAttribute("style:family", "graphic");
+					$office_styles->appendChild($style_default_style);
+				
+					$style_graphic_properties = $dom->createElement('style:graphic-properties');
+						$style_graphic_properties->setAttribute("draw:shadow-offset-x", "0.3cm");
+						$style_graphic_properties->setAttribute("draw:shadow-offset-y", "0.3cm");
+						$style_default_style->appendChild($style_graphic_properties);
+					
+					$style_paragraph_properties = $dom->createElement('style:paragraph-properties');
+						$style_paragraph_properties->setAttribute("style:text-autospace", "ideograph-alpha");
+						$style_paragraph_properties->setAttribute("style:punctuation-wrap", "simple");
+						$style_paragraph_properties->setAttribute("style:line-break", "strict");
+						$style_paragraph_properties->setAttribute("style:writing-mode", "page");
+						$style_paragraph_properties->setAttribute("style:font-independent-line-spacing", "false");
+						$style_default_style->appendChild($style_paragraph_properties);
+						
+						$style_tab_stops = $dom->createElement('style:tab-stops');
+							$style_paragraph_properties->appendChild($style_tab_stops);
+							
+					$style_text_properties =  $dom->createElement('style:text-properties');
+						$style_text_properties->setAttribute("style:use-window-font-color", "true");
+						$style_text_properties->setAttribute("fo:font-family", "'Nimbus Roman No9 L'");
+						$style_text_properties->setAttribute("style:font-family-generic", "roman");
+						$style_text_properties->setAttribute("style:font-pitch", "variable");
+						$style_text_properties->setAttribute("fo:font-size", "12pt");
+						$style_text_properties->setAttribute("fo:language", "fr");
+						$style_text_properties->setAttribute("fo:country", "FR");
+						$style_text_properties->setAttribute("style:letter-kerning", "true");
+						$style_text_properties->setAttribute("style:font-size-asian", "24pt");
+						$style_text_properties->setAttribute("style:language-asian", "zxx");
+						$style_text_properties->setAttribute("style:country-asian", "none");
+						$style_text_properties->setAttribute("style:font-size-complex", "24pt");
+						$style_text_properties->setAttribute("style:language-complex", "zxx");
+						$style_text_properties->setAttribute("style:country-complex", "none");
+						$style_default_style->appendChild($style_text_properties);
+
 				//<number:number-style style:name="N0">
 				$number_number_style = $dom->createElement('number:number-style');
 					$number_number_style->setAttribute("style:name", "N0");
@@ -961,6 +1006,9 @@ class ods {
 		$zip->addFile("files/Configurations2/accelerator/current.xml","Configurations2/accelerator/current.xml");
 		$zip->addFile("files/META-INF/manifest.xml","META-INF/manifest.xml");
 		$zip->addFile("files/Thumbnails/thumbnail.png","Thumbnails/thumbnail.png");
+		
+		foreach($this->tmpPictures AS $file => $name)
+			$zip->addFile($file,$name);
 		
 		$zip->close();
 		
