@@ -25,12 +25,14 @@ class ods {
 	private $subject;
 	private $keyword;
 	private $description;
+	private $path2OdsFiles;
 	
 	public function __construct() {
-		$this->title       = null;
-		$this->subject     = null;
-		$this->keyword     = null;
-		$this->description = null;
+		$this->title         = null;
+		$this->subject       = null;
+		$this->keyword       = null;
+		$this->description   = null;
+		$this->path2OdsFiles = ".";
 		
 		$this->defaultTable = null;
 		
@@ -63,6 +65,10 @@ class ods {
 	
 	public function setDescription($description) {
 		$this->description = $description;
+	}
+	
+	public function setPath2OdsFiles($path) {
+		$this->path2OdsFiles = $path;
 	}
 	
 	public function addFontFaces(odsFontFace $odsFontFace) {
@@ -873,37 +879,35 @@ class ods {
 		return $dom->saveXML();
 	}
 		
-
-	public function getOds() {
+	public function genOdsFile($file) {
 		$zip = new ZipArchive();
-		$filename = tempnam("tmp", "genodp");
-		//var_dump($filename);
 		
-		if ($zip->open($filename, ZIPARCHIVE::OVERWRITE)!==TRUE) {
-		   exit("cannot open $filename\n");
+		if ($zip->open($file, ZIPARCHIVE::OVERWRITE)!==TRUE) {
+		   exit("cannot open $file\n");
 		}
 		
 		$zip->addFromString("meta.xml", $this->getMeta());
 		$zip->addFromString("content.xml", $this->getContent());
-		$zip->addFile("files/mimetype","mimetype");
-		//$zip->addFile("files/settings.xml","settings.xml");
+		$zip->addFile($this->path2OdsFiles."/files/mimetype","mimetype");
 		$zip->addFromString("settings.xml", $this->getSettings());
-		//$zip->addFile("files/styles.xml","styles.xml");
 		$zip->addFromString("styles.xml", $this->getStyles());
-		$zip->addFile("files/Configurations2/accelerator/current.xml","Configurations2/accelerator/current.xml");
-		$zip->addFile("files/META-INF/manifest.xml","META-INF/manifest.xml");
-		$zip->addFile("files/Thumbnails/thumbnail.png","Thumbnails/thumbnail.png");
+		$zip->addFile($this->path2OdsFiles."/files/Configurations2/accelerator/current.xml","Configurations2/accelerator/current.xml");
+		$zip->addFile($this->path2OdsFiles."/files/META-INF/manifest.xml","META-INF/manifest.xml");
+		$zip->addFile($this->path2OdsFiles."/files/Thumbnails/thumbnail.png","Thumbnails/thumbnail.png");
 		
-		foreach($this->tmpPictures AS $file => $name)
-			$zip->addFile($file,$name);
+		foreach($this->tmpPictures AS $imgfile => $name)
+			$zip->addFile($imgfile,$name);
 		
 		$zip->close();
-		
+	}
+	
+	public function downloadOdsFile($fileName) {
 		header('Content-type: application/vnd.oasis.opendocument.spreadsheet');
-		header('Content-Disposition: attachment; filename="downloaded.ods"');
-		
-		readfile($filename);
-		unlink($filename);
+		header('Content-Disposition: attachment; filename="'.$fileName.'"');
+		$tmpfile = tempnam("tmp", "genods");
+		$this->genOdsFile($tmpfile);
+		readfile($tmpfile);
+		unlink($tmpfile);
 	}
 
 
