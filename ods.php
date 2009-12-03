@@ -21,7 +21,17 @@ class ods {
 	private $tmpPictures;
 	private $tables;
 	
+	private $title;
+	private $subject;
+	private $keyword;
+	private $description;
+	
 	public function __construct() {
+		$this->title       = null;
+		$this->subject     = null;
+		$this->keyword     = null;
+		$this->description = null;
+		
 		$this->defaultTable = null;
 		
 		$this->scripts   = array();
@@ -37,6 +47,22 @@ class ods {
 		$this->addStyles( new odsStyleTableRow("ro1") );
 		$this->addStyles( new odsStyleTableCell("ce1") );
 		
+	}
+	
+	public function setTitle($title) {
+		$this->title = $title;
+	}
+	
+	public function setSubject($subject) {
+		$this->subject = $subject;
+	}
+	
+	public function setKeyword($keyword) {
+		$this->keyword = $keyword;
+	}
+	
+	public function setDescription($description) {
+		$this->description = $description;
 	}
 	
 	public function addFontFaces(odsFontFace $odsFontFace) {
@@ -160,7 +186,7 @@ class ods {
 		return $dom->saveXML();
 	}
 	
-	public function getMeta($titre) {
+	public function getMeta() {
 		$dom = new DOMDocument('1.0', 'UTF-8');
 		
 		$root = $dom->createElement('office:document-meta');
@@ -180,8 +206,14 @@ class ods {
 		$meta->appendChild($dom->createElement('dc:date',date("Y-m-d\TH:j:s")));
 		$meta->appendChild($dom->createElement('meta:editing-duration','PT1S'));
 		$meta->appendChild($dom->createElement('meta:editing-cycles','1'));
-		$meta->appendChild($dom->createElement('dc:title',$titre));
-		$meta->appendChild($dom->createElement('dc:description','ods générator 0.0.1'));
+		if($this->title)
+			$meta->appendChild($dom->createElement('dc:title',$this->title));
+		if($this->subject)
+			$meta->appendChild($dom->createElement('dc:subject',$this->subject));
+		if($this->keyword)
+			$meta->appendChild($dom->createElement('meta:keyword',$this->keyword));
+		if($this->description)
+			$meta->appendChild($dom->createElement('dc:description',$this->description));
 		$elm = $dom->createElement('meta:document-statistic');
 			$elm->setAttribute("meta:table-count", "1");
 			$elm->setAttribute("meta:cell-count", "4");
@@ -607,152 +639,7 @@ class ods {
 
 					$number_number = $dom->createElement('number:number');
 						$number_number->setAttribute("number:min-integer-digits", "1");
-						$number_number_style->appendChild($number_number);
-				
-				/*
-				// style : 50 000,00 €
-				$number_currency_style = $dom->createElement('number:currency-style');
-					$number_currency_style->setAttribute("style:name", "NCur-EUR-P0");
-					$number_currency_style->setAttribute("style:volatile", "true");
-					$office_styles->appendChild($number_currency_style);
-				
-					$number_number = $dom->createElement('number:number');
-						$number_number->setAttribute("number:decimal-places", "2");
-						$number_number->setAttribute("number:min-integer-digits", "1");
-						$number_number->setAttribute("number:grouping", "true");
-						$number_currency_style->appendChild($number_number);
-						
-					$number_text = $dom->createElement('number:text', ' ');
-						$number_currency_style->appendChild($number_text);
-				
-					$number_currency_symbol = $dom->createElement('number:currency-symbol', '€');
-						$number_currency_symbol->setAttribute("number:language", "fr");
-						$number_currency_symbol->setAttribute("number:country", "FR");
-						$number_number->setAttribute("number:grouping", "true");
-						$number_currency_style->appendChild($number_currency_symbol);
-				
-				// style : -50 000,00 €
-				$number_currency_style = $dom->createElement('number:currency-style');
-					$number_currency_style->setAttribute("style:name", "NCur-EUR");
-					$office_styles->appendChild($number_currency_style);
-
-					$style_text_properties = $dom->createElement('style:text-properties');
-						$style_text_properties->setAttribute("fo:color", "#ff0000");
-						$number_currency_style->appendChild($style_text_properties);
-
-					$number_text = $dom->createElement('number:text', '-');
-						$number_currency_style->appendChild($number_text);
-				
-					$number_number = $dom->createElement('number:number');
-						$number_number->setAttribute("number:decimal-places", "2");
-						$number_number->setAttribute("number:min-integer-digits", "1");
-						$number_number->setAttribute("number:grouping", "true");
-						$number_currency_style->appendChild($number_number);
-						
-					$number_text = $dom->createElement('number:text', ' ');
-						$number_currency_style->appendChild($number_text);
-				
-					$number_currency_symbol = $dom->createElement('number:currency-symbol', '€');
-						$number_currency_symbol->setAttribute("number:language", "fr");
-						$number_currency_symbol->setAttribute("number:country", "FR");
-						$number_currency_style->appendChild($number_currency_symbol);
-				
-					$style_map = $dom->createElement('style:map');
-						$style_map->setAttribute("style:condition", "value()>=0");
-						$style_map->setAttribute("style:apply-style-name", "NCur-EUR-P0");
-						$number_currency_style->appendChild($style_map);
-
-				// style : $50 000,00
-				$number_currency_style = $dom->createElement('number:currency-style');
-					$number_currency_style->setAttribute("style:name", "NCur-USD-P0");
-					$number_currency_style->setAttribute("style:volatile", "true");
-					$office_styles->appendChild($number_currency_style);
-
-					$number_currency_symbol = $dom->createElement('number:currency-symbol', '$');
-						$number_currency_symbol->setAttribute("number:language", "en");
-						$number_currency_symbol->setAttribute("number:country", "US");
-						$number_number->setAttribute("number:grouping", "true");
-						$number_currency_style->appendChild($number_currency_symbol);
-				
-					$number_number = $dom->createElement('number:number');
-						$number_number->setAttribute("number:decimal-places", "2");
-						$number_number->setAttribute("number:min-integer-digits", "1");
-						$number_number->setAttribute("number:grouping", "true");
-						$number_currency_style->appendChild($number_number);
-				
-				// style : -$50 000,00
-				$number_currency_style = $dom->createElement('number:currency-style');
-					$number_currency_style->setAttribute("style:name", "NCur-USD");
-					$office_styles->appendChild($number_currency_style);
-
-					$style_text_properties = $dom->createElement('style:text-properties');
-						$style_text_properties->setAttribute("fo:color", "#ff0000");
-						$number_currency_style->appendChild($style_text_properties);
-
-					$number_text = $dom->createElement('number:text', '-');
-						$number_currency_style->appendChild($number_text);
-				
-					$number_currency_symbol = $dom->createElement('number:currency-symbol', '$');
-						$number_currency_symbol->setAttribute("number:language", "en");
-						$number_currency_symbol->setAttribute("number:country", "US");
-						$number_currency_style->appendChild($number_currency_symbol);
-				
-					$number_number = $dom->createElement('number:number');
-						$number_number->setAttribute("number:decimal-places", "2");
-						$number_number->setAttribute("number:min-integer-digits", "1");
-						$number_number->setAttribute("number:grouping", "true");
-						$number_currency_style->appendChild($number_number);
-										
-					$style_map = $dom->createElement('style:map');
-						$style_map->setAttribute("style:condition", "value()>=0");
-						$style_map->setAttribute("style:apply-style-name", "NCur-USD-P0");
-						$number_currency_style->appendChild($style_map);
-						
-				// style : £50 000,00
-				$number_currency_style = $dom->createElement('number:currency-style');
-					$number_currency_style->setAttribute("style:name", "NCur-GBP-P0");
-					$number_currency_style->setAttribute("style:volatile", "true");
-					$office_styles->appendChild($number_currency_style);
-
-					$number_currency_symbol = $dom->createElement('number:currency-symbol', '£');
-						$number_currency_symbol->setAttribute("number:language", "en");
-						$number_currency_symbol->setAttribute("number:country", "GB");
-						$number_currency_style->appendChild($number_currency_symbol);
-				
-					$number_number = $dom->createElement('number:number');
-						$number_number->setAttribute("number:decimal-places", "2");
-						$number_number->setAttribute("number:min-integer-digits", "1");
-						$number_number->setAttribute("number:grouping", "true");
-						$number_currency_style->appendChild($number_number);
-						
-				// style : -£50 000,00
-				$number_currency_style = $dom->createElement('number:currency-style');
-					$number_currency_style->setAttribute("style:name", "NCur-GBP");
-					$office_styles->appendChild($number_currency_style);
-
-					$style_text_properties = $dom->createElement('style:text-properties');
-						$style_text_properties->setAttribute("fo:color", "#ff0000");
-						$number_currency_style->appendChild($style_text_properties);
-
-					$number_text = $dom->createElement('number:text', '-');
-						$number_currency_style->appendChild($number_text);
-				
-					$number_currency_symbol = $dom->createElement('number:currency-symbol', '£');
-						$number_currency_symbol->setAttribute("number:language", "en");
-						$number_currency_symbol->setAttribute("number:country", "GB");
-						$number_currency_style->appendChild($number_currency_symbol);
-				
-					$number_number = $dom->createElement('number:number');
-						$number_number->setAttribute("number:decimal-places", "2");
-						$number_number->setAttribute("number:min-integer-digits", "1");
-						$number_number->setAttribute("number:grouping", "true");
-						$number_currency_style->appendChild($number_number);
-										
-					$style_map = $dom->createElement('style:map');
-						$style_map->setAttribute("style:condition", "value()>=0");
-						$style_map->setAttribute("style:apply-style-name", "NCur-GBP-P0");
-						$number_currency_style->appendChild($style_map);
-				*/	
+						$number_number_style->appendChild($number_number);				
 
 				$style_style = $dom->createElement('style:style');
 					$style_style->setAttribute("style:name", "Default");
@@ -996,7 +883,7 @@ class ods {
 		   exit("cannot open $filename\n");
 		}
 		
-		$zip->addFromString("meta.xml", $this->getMeta('test'));
+		$zip->addFromString("meta.xml", $this->getMeta());
 		$zip->addFromString("content.xml", $this->getContent());
 		$zip->addFile("files/mimetype","mimetype");
 		//$zip->addFile("files/settings.xml","settings.xml");
