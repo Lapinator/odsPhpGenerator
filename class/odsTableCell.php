@@ -32,7 +32,7 @@ class odsTableCellEmpty extends odsTableCell {
 	}
 }
 
-class odsTableCellString extends odsTableCell {
+class odsTableCellStringHttp extends odsTableCell {
 	public $value;
 	public $styleName;
 	
@@ -49,6 +49,13 @@ class odsTableCellString extends odsTableCell {
 			$text_p = $dom->createElement('text:p',$this->value);
 				$table_table_cell->appendChild($text_p);
 		return $table_table_cell;
+	}
+}
+
+class odsTableCellString extends odsTableCellStringHttp {
+	public function __construct($value,odsStyleTableCell $odsStyleTableCell = null) {
+		$this->value = str_replace('&', '&amp;', $value);
+		$this->styleName = $odsStyleTableCell;
 	}
 }
 
