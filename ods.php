@@ -25,7 +25,6 @@ class ods {
 	private $subject;
 	private $keyword;
 	private $description;
-	private $path2OdsFiles;
 	
 	public function __construct() {
 		$this->title         = null;
@@ -67,9 +66,8 @@ class ods {
 		$this->description = $description;
 	}
 	
-	public function setPath2OdsFiles($path) {
-		$this->path2OdsFiles = $path;
-	}
+	// Deprecated
+	public function setPath2OdsFiles($path) {}
 	
 	public function addFontFaces(odsFontFace $odsFontFace) {
 		if(in_array($odsFontFace,$this->fontFaces)) return;
@@ -878,7 +876,283 @@ class ods {
 		
 		return $dom->saveXML();
 	}
+	
+	private function getMimeType() {
+		return "application/vnd.oasis.opendocument.spreadsheet";
+	}
+	
+	private function getAcceleratorCurrent() {
+		return "";
+	}
+	
+	private function getManifest() {
+		$dom = new DOMDocument('1.0', 'UTF-8');
+		$root = $dom->createElement('manifest:manifest');
+			$root->setAttribute("xmlns:manifest", "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0");
+			$dom->appendChild($root);
 		
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "application/vnd.oasis.opendocument.spreadsheet");
+				$manifest_file_entry->setAttribute("manifest:version", "1.2");
+				$manifest_file_entry->setAttribute("manifest:full-path", "/");
+				$root->appendChild($manifest_file_entry);
+			
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "text/xml");
+				$manifest_file_entry->setAttribute("manifest:full-path", "content.xml");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "text/xml");
+				$manifest_file_entry->setAttribute("manifest:full-path", "styles.xml");
+				$root->appendChild($manifest_file_entry);
+			
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "text/xml");
+				$manifest_file_entry->setAttribute("manifest:full-path", "meta.xml");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Thumbnails/thumbnail.png");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Thumbnails/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/accelerator/current.xml");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/accelerator/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/progressbar/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/floater/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/popupmenu/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/menubar/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/toolbar/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/images/Bitmaps/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/images/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/statusbar/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "application/vnd.sun.xml.ui.configuration");
+				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/");
+				$root->appendChild($manifest_file_entry);
+
+			$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:media-type", "text/xml");
+				$manifest_file_entry->setAttribute("manifest:full-path", "settings.xml");
+				$root->appendChild($manifest_file_entry);
+
+		return $dom->saveXML();
+	}
+	
+	private function getThumbnail() {
+		return base64_decode("
+			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
+			JXMAAAAASUVORK5CYII=");
+	}
+	
 	public function genOdsFile($file) {
 		$zip = new ZipArchive();
 		
@@ -888,12 +1162,12 @@ class ods {
 		
 		$zip->addFromString("meta.xml", $this->getMeta());
 		$zip->addFromString("content.xml", $this->getContent());
-		$zip->addFile($this->path2OdsFiles."/files/mimetype","mimetype");
+		$zip->addFromString("files/mimetype", $this->getMimeType());
 		$zip->addFromString("settings.xml", $this->getSettings());
 		$zip->addFromString("styles.xml", $this->getStyles());
-		$zip->addFile($this->path2OdsFiles."/files/Configurations2/accelerator/current.xml","Configurations2/accelerator/current.xml");
-		$zip->addFile($this->path2OdsFiles."/files/META-INF/manifest.xml","META-INF/manifest.xml");
-		$zip->addFile($this->path2OdsFiles."/files/Thumbnails/thumbnail.png","Thumbnails/thumbnail.png");
+		$zip->addFromString("files/Configurations2/accelerator/current.xml", $this->getAcceleratorCurrent());
+		$zip->addFromString("META-INF/manifest.xml", $this->getManifest());
+		$zip->addFromString("files/Thumbnails/thumbnail.png", $this->getThumbnail());
 		
 		foreach($this->tmpPictures AS $imgfile => $name)
 			$zip->addFile($imgfile,$name);
