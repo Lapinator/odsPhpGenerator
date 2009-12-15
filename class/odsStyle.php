@@ -604,4 +604,384 @@ class odsStyleMoneyGBPNeg extends odsStyleMoney {
 	}
 }
 
+abstract class odsStyleDate extends odsStyle {
+	protected $language;
+	
+	protected function setLanguage($number_date_style) {
+		if(!isset($this->language)) return;
+		$number_date_style->setAttribute("number:language", $this->language);
+		$number_date_style->setAttribute("number:country", $this->language);
+	}
+}
+
+class odsStyleDateMMDDYYYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-MMDDYYYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_day = $dom->createElement('number:day');
+				$number_day->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_day);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_year->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateMMDDYYYY';
+	}
+}
+
+class odsStyleDateMMDDYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-MMDDYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_day = $dom->createElement('number:day');
+				$number_day->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_day);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateMMDDYY';
+	}
+}
+
+class odsStyleDateDDMMYYYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-DDMMYYYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_day = $dom->createElement('number:day');
+				$number_day->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_day);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+	
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_year->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateDDMMYYYY';
+	}
+}
+
+class odsStyleDateDDMMYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-DDMMYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_day = $dom->createElement('number:day');
+				$number_day->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_day);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+	
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateDDMMYY';
+	}
+}
+
+class odsStyleDateDMMMYYYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-DMMMYYYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+	
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:textual", "true");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_year->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateDMMMYYYY';
+	}
+}
+
+class odsStyleDateDMMMYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-DMMMYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+	
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:textual", "true");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateDMMMYY';
+	}
+}
+
+class odsStyleDateDMMMMYYYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-DMMMMYYYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+	
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:textual", "true");
+				$number_month->setAttribute(" number:style", "long");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_year->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateDMMMMYYYY';
+	}
+}
+
+class odsStyleDateDMMMMYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-DMMMMYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+	
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:textual", "true");
+				$number_month->setAttribute(" number:style", "long");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateDMMMMYY';
+	}
+}
+
+class odsStyleDateMMMDYYYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-MMMDYYYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:textual", "true");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);	
+
+			$number_text = $dom->createElement('number:text', ', ');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_year->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateDMMMMYY';
+	}
+}
+
+class odsStyleDateMMMDYY extends odsStyleDate {
+	public function __construct($language) {
+		$this->name='Date-MMMDYY';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_month = $dom->createElement('number:month');
+				$number_month->setAttribute("number:textual", "true");
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);	
+
+			$number_text = $dom->createElement('number:text', ', ');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateDMMMM';
+	}
+}
 ?>
