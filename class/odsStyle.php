@@ -1115,6 +1115,9 @@ class odsStyleTimeHHMMAMPM extends odsStyleTime {
 
 			$number_text = $dom->createElement('number:text', ' ');
 				$number_time_style->appendChild($number_text);
+			
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
 
 			$number_am_pm = $dom->createElement('number:am-pm');
 				$number_am_pm->setAttribute("number:style", "long");
@@ -1125,6 +1128,228 @@ class odsStyleTimeHHMMAMPM extends odsStyleTime {
 
 	public function getType() {
 		return 'odsStyleTimeHHMMAMPM';
+	}
+}
+
+abstract class odsStyleDateTime extends odsStyleDate {
+}
+
+class odsStyleDateTimeMMDDYYHHMMSSAMPM extends odsStyleDateTime {
+	public function __construct($language) {
+		$this->name='DateTime-MMDDYYHHMMSSAMPM';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_month = $dom->createElement('number:month');
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);	
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_hours = $dom->createElement('number:hours');
+			$number_hours->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_hours);
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_date_style->appendChild($number_text);
+
+			$number_minutes = $dom->createElement('number:minutes');
+			$number_minutes->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_minutes);
+				
+			$number_text = $dom->createElement('number:text', ':');
+				$number_date_style->appendChild($number_text);
+
+			$number_seconds = $dom->createElement('number:seconds');
+				$number_seconds->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_seconds);
+				
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+			
+			$number_am_pm = $dom->createElement('number:am-pm');
+				$number_date_style->appendChild($number_am_pm);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateTimeMMDDYYHHMMSSAMPM';
+	}
+}
+
+class odsStyleDateTimeMMDDYYHHMMAMPM extends odsStyleDateTime {
+	public function __construct($language) {
+		$this->name='DateTime-MMDDYYHHMMAMPM';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_month = $dom->createElement('number:month');
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);	
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_hours = $dom->createElement('number:hours');
+			$number_hours->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_hours);
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_date_style->appendChild($number_text);
+
+			$number_minutes = $dom->createElement('number:minutes');
+			$number_minutes->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_minutes);
+			
+			$number_am_pm = $dom->createElement('number:am-pm');
+				$number_date_style->appendChild($number_am_pm);
+			
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateTimeMMDDYYHHMMAMPM';
+	}
+}
+
+class odsStyleDateTimeDDMMYYHHMMSS extends odsStyleDateTime {
+	public function __construct($language) {
+		$this->name='DateTime-DDMMYYHHMMSS';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);	
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+			
+			$number_month = $dom->createElement('number:month');
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_hours = $dom->createElement('number:hours');
+			$number_hours->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_hours);
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_date_style->appendChild($number_text);
+
+			$number_minutes = $dom->createElement('number:minutes');
+			$number_minutes->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_minutes);
+				
+			$number_text = $dom->createElement('number:text', ':');
+				$number_date_style->appendChild($number_text);
+
+			$number_seconds = $dom->createElement('number:seconds');
+				$number_seconds->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_seconds);
+				
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateTimeDDMMYYHHMMSS';
+	}
+}
+
+class odsStyleDateTimeDDMMYYHHMM extends odsStyleDateTime {
+	public function __construct($language) {
+		$this->name='DateTime-DDMMYYHHMM';
+		$this->language = $language;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_date_style = $dom->createElement('number:date-style');
+			$number_date_style->setAttribute("style:name", $this->name);
+			$number_date_style->setAttribute("number:automatic-order", "true");
+			$this->setLanguage($number_date_style);
+			
+			$number_day = $dom->createElement('number:day');
+				$number_date_style->appendChild($number_day);	
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+			
+			$number_month = $dom->createElement('number:month');
+				$number_date_style->appendChild($number_month);
+
+			$number_text = $dom->createElement('number:text', '/');
+				$number_date_style->appendChild($number_text);
+
+			$number_year = $dom->createElement('number:year');
+				$number_date_style->appendChild($number_year);
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_date_style->appendChild($number_text);
+
+			$number_hours = $dom->createElement('number:hours');
+			$number_hours->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_hours);
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_date_style->appendChild($number_text);
+
+			$number_minutes = $dom->createElement('number:minutes');
+			$number_minutes->setAttribute("number:style", "long");
+				$number_date_style->appendChild($number_minutes);
+				
+		return $number_date_style;
+	}
+
+	public function getType() {
+		return 'odsStyleDateTimeDDMMYYHHMM';
 	}
 }
 
