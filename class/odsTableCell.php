@@ -229,7 +229,6 @@ class odsTableCellDate extends odsTableCell {
 		}
 		
 		$table_table_cell = $dom->createElement('table:table-cell');
-		//$table_table_cell = parent::getContent($ods,$dom);
 		
 		if( $this->styleName ) {
 				$style = $ods->getStyleByName($this->styleName->getName()."-".$this->format);
@@ -258,6 +257,63 @@ class odsTableCellDate extends odsTableCell {
 	
 }
 
+class odsTableCellTime extends odsTableCell {
+	private $time;
+	private $format;
+	private $language;
+	
+	public function __construct($time, $format="HHMM", odsStyleGraphic $odsStyleCellDate = null) {
+		$this->date = $time;
+		$this->format = $format;
+		$this->styleName = $odsStyleCellDate;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		switch($this->format) {
+		case 'HHMMSS':
+			$ods->addTmpStyles(new odsStyleTimeHHMMSS());
+			break;
+		case 'HHMM':
+			$ods->addTmpStyles(new odsStyleTimeHHMM());
+			break;
+		case 'HHMMSSAMPM':
+			$ods->addTmpStyles(new odsStyleTimeHHMMSSAMPM());
+			break;
+		case 'HHMMAMPM':
+			$ods->addTmpStyles(new odsStyleTimeHHMMAMPM());
+			break;
+		default:
+			//FIXME: send error;
+		}
+		
+		$table_table_cell = $dom->createElement('table:table-cell');
+		
+		if( $this->styleName ) {
+				$style = $ods->getStyleByName($this->styleName->getName()."-".$this->format);
+				if(!$style) {
+					$style = clone $this->styleName;
+					$style->setName($this->styleName->getName()."-".$this->format);
+					$style->setStyleDataName('Time-'.$this->format);
+					$ods->addTmpStyles($style);
+				}
+				$table_table_cell->setAttribute("table:style-name", $style->getName());
+			} else {
+				$style = $ods->getStyleByName("ce1-".$this->format);
+				if(!$style) {
+					$style = clone $ods->getStyleByName("ce1");
+					$style->setName("ce1-".$this->format);
+					$style->setStyleDataName('Time-'.$this->format);
+					$ods->addTmpStyles($style);
+				}
+				$table_table_cell->setAttribute("table:style-name", $style->getName());
+			}
+		
+		$table_table_cell->setAttribute("office:value-type","time");
+		$table_table_cell->setAttribute("office:time-value",$this->date);
+		return $table_table_cell;
+	}
+	
+}
 
 class odsTableCellImage extends odsTableCell {
 	private $file;

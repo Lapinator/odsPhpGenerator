@@ -984,4 +984,148 @@ class odsStyleDateMMMDYY extends odsStyleDate {
 		return 'odsStyleDateDMMMM';
 	}
 }
+
+abstract class odsStyleTime extends odsStyle {
+}
+
+class odsStyleTimeHHMMSS extends odsStyleTime {
+	public function __construct() {
+		$this->name='Time-HHMMSS';
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_time_style = $dom->createElement('number:time-style');
+			$number_time_style->setAttribute("style:name", $this->name);
+			
+			$number_hours = $dom->createElement('number:hours');
+				$number_hours->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_hours);
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_time_style->appendChild($number_text);
+
+			$number_minutes = $dom->createElement('number:minutes');
+				$number_minutes->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_minutes);	
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_time_style->appendChild($number_text);
+
+			$number_seconds = $dom->createElement('number:seconds');
+				$number_seconds->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_seconds);	
+			
+		return $number_time_style;
+	}
+
+	public function getType() {
+		return 'odsStyleTimeHHMMSS';
+	}
+}
+
+class odsStyleTimeHHMM extends odsStyleTime {
+	public function __construct() {
+		$this->name='Time-HHMM';
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_time_style = $dom->createElement('number:time-style');
+			$number_time_style->setAttribute("style:name", $this->name);
+			
+			$number_hours = $dom->createElement('number:hours');
+				$number_hours->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_hours);
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_time_style->appendChild($number_text);
+
+			$number_minutes = $dom->createElement('number:minutes');
+				$number_minutes->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_minutes);	
+			
+		return $number_time_style;
+	}
+
+	public function getType() {
+		return 'odsStyleTimeHHMM';
+	}
+}
+
+class odsStyleTimeHHMMSSAMPM extends odsStyleTime {
+	public function __construct() {
+		$this->name='Time-HHMMSSAMPM';
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_time_style = $dom->createElement('number:time-style');
+			$number_time_style->setAttribute("style:name", $this->name);
+			
+			$number_hours = $dom->createElement('number:hours');
+				$number_hours->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_hours);
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_time_style->appendChild($number_text);
+
+			$number_minutes = $dom->createElement('number:minutes');
+				$number_minutes->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_minutes);	
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_time_style->appendChild($number_text);
+
+			$number_seconds = $dom->createElement('number:seconds');
+				$number_seconds->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_seconds);	
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_time_style->appendChild($number_text);
+
+			$number_am_pm = $dom->createElement('number:am-pm');
+				$number_am_pm->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_am_pm);	
+			
+		return $number_time_style;
+	}
+
+	public function getType() {
+		return 'odsStyleTimeHHMMSSAMPM';
+	}
+}
+
+class odsStyleTimeHHMMAMPM extends odsStyleTime {
+	public function __construct() {
+		$this->name='Time-HHMMAMPM';
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$number_time_style = $dom->createElement('number:time-style');
+			$number_time_style->setAttribute("style:name", $this->name);
+			
+			$number_hours = $dom->createElement('number:hours');
+				$number_hours->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_hours);
+
+			$number_text = $dom->createElement('number:text', ':');
+				$number_time_style->appendChild($number_text);
+
+			$number_minutes = $dom->createElement('number:minutes');
+				$number_minutes->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_minutes);	
+
+			$number_text = $dom->createElement('number:text', ' ');
+				$number_time_style->appendChild($number_text);
+
+			$number_am_pm = $dom->createElement('number:am-pm');
+				$number_am_pm->setAttribute("number:style", "long");
+				$number_time_style->appendChild($number_am_pm);	
+			
+		return $number_time_style;
+	}
+
+	public function getType() {
+		return 'odsStyleTimeHHMMAMPM';
+	}
+}
+
 ?>
