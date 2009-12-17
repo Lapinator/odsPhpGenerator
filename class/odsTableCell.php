@@ -6,6 +6,8 @@
 
 abstract class odsTableCell {
 	protected $styleName;
+	protected $numberColumnsSpanned;
+	protected $numberRowsSpanned;
 	
 	abstract protected function __construct();
 	
@@ -15,8 +17,25 @@ abstract class odsTableCell {
 			$ods->addTmpStyles($this->styleName);
 			$table_table_cell->setAttribute("table:style-name", $this->styleName->getName());
 		}
+		$this->cellOpts($table_table_cell);
 		return $table_table_cell;
 	}
+	
+	protected function cellOpts( $table_table_cell ) {
+		if($this->numberColumnsSpanned)
+			$table_table_cell->setAttribute("table:number-columns-spanned", $this->numberColumnsSpanned);
+		if($this->numberRowsSpanned)
+			$table_table_cell->setAttribute("table:number-rows-spanned", $this->numberRowsSpanned);
+	}
+	
+	function setNumberColumnsSpanned($numberColumnsSpanned) {
+		$this->numberColumnsSpanned = $numberColumnsSpanned;
+	}
+	
+	function setNumberRowsSpanned($numberRowsSpanned) {
+		$this->numberRowsSpanned = $numberRowsSpanned;
+	}
+	
 }
 
 class odsTableCellEmpty extends odsTableCell {
@@ -26,9 +45,16 @@ class odsTableCellEmpty extends odsTableCell {
 	}
 	
 	public function getContent(ods $ods, DOMDocument $dom) {
-		return parent::getContent($ods,$dom);
+		return odsTableCell::getContent($ods,$dom);
 		//$table_table_row->setAttribute("table:number-columns-repeated", "1022");
 		//return $table_table_cell;
+	}
+}
+
+class odsCoveredTableCell extends odsTableCell {
+	public function __construct() {}
+	public function getContent(ods $ods, DOMDocument $dom) {
+		return $dom->createElement('table:covered-table-cell');
 	}
 }
 
@@ -42,7 +68,7 @@ class odsTableCellStringHttp extends odsTableCell {
 	}
 	
 	public function getContent(ods $ods, DOMDocument $dom) {
-		$table_table_cell = parent::getContent($ods,$dom);
+		$table_table_cell = odsTableCell::getContent($ods,$dom);
 			$table_table_cell->setAttribute("office:value-type", "string");
 			
 			// text:p
@@ -107,7 +133,7 @@ class odsTableCellFloat extends odsTableCell {
 	}
 	
 	public function getContent(ods $ods, DOMDocument $dom) {
-		$table_table_cell = parent::getContent($ods,$dom);
+		$table_table_cell = odsTableCell::getContent($ods,$dom);
 			$table_table_cell->setAttribute("office:value-type", "float");
 			$table_table_cell->setAttribute("office:value", $this->value);
 			
@@ -148,6 +174,7 @@ class odsTableCellCurrency extends odsTableCell {
 		}
 
 		$table_table_cell = $dom->createElement('table:table-cell');
+		$this->cellOpts($table_table_cell);
 			if( $this->styleName ) {
 				$style = $ods->getStyleByName($this->styleName->getName()."-".$this->currency);
 				if(!$style) {
@@ -229,6 +256,7 @@ class odsTableCellDate extends odsTableCell {
 		}
 		
 		$table_table_cell = $dom->createElement('table:table-cell');
+		$this->cellOpts($table_table_cell);
 		
 		if( $this->styleName ) {
 				$style = $ods->getStyleByName($this->styleName->getName()."-".$this->format);
@@ -286,6 +314,7 @@ class odsTableCellTime extends odsTableCell {
 		}
 		
 		$table_table_cell = $dom->createElement('table:table-cell');
+		$this->cellOpts($table_table_cell);
 		
 		if( $this->styleName ) {
 				$style = $ods->getStyleByName($this->styleName->getName()."-".$this->format);
@@ -343,6 +372,7 @@ class odsTableCellDateTime extends odsTableCell {
 		}
 		
 		$table_table_cell = $dom->createElement('table:table-cell');
+		$this->cellOpts($table_table_cell);
 		
 		if( $this->styleName ) {
 				$style = $ods->getStyleByName($this->styleName->getName()."-".$this->format);
@@ -421,6 +451,7 @@ class odsTableCellImage extends odsTableCell {
 		$ods->addTmpStyles($style);
 		
 		$table_table_cell = $dom->createElement('table:table-cell');
+		$this->cellOpts($table_table_cell);
 
 			$draw_frame = $dom->createElement('draw:frame');
 				//$draw_frame->setAttribute("table:end-cell-address", "Feuille1.AA85");
