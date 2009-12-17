@@ -8,6 +8,7 @@ abstract class odsTableCell {
 	protected $styleName;
 	protected $numberColumnsSpanned;
 	protected $numberRowsSpanned;
+	protected $formula;
 	
 	abstract protected function __construct();
 	
@@ -26,14 +27,20 @@ abstract class odsTableCell {
 			$table_table_cell->setAttribute("table:number-columns-spanned", $this->numberColumnsSpanned);
 		if($this->numberRowsSpanned)
 			$table_table_cell->setAttribute("table:number-rows-spanned", $this->numberRowsSpanned);
+		if($this->formula)
+			$table_table_cell->setAttribute("table:formula", "of:=".$this->formula);
 	}
 	
-	function setNumberColumnsSpanned($numberColumnsSpanned) {
+	public function setNumberColumnsSpanned($numberColumnsSpanned) {
 		$this->numberColumnsSpanned = $numberColumnsSpanned;
 	}
 	
-	function setNumberRowsSpanned($numberRowsSpanned) {
+	public function setNumberRowsSpanned($numberRowsSpanned) {
 		$this->numberRowsSpanned = $numberRowsSpanned;
+	}
+	
+	public function setFormula($formula) {
+		$this->formula = $formula;
 	}
 	
 }
