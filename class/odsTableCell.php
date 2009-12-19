@@ -9,6 +9,7 @@ abstract class odsTableCell {
 	protected $numberColumnsSpanned;
 	protected $numberRowsSpanned;
 	protected $formula;
+	protected $numberColumnsRepeated;
 	
 	abstract protected function __construct();
 	
@@ -29,10 +30,17 @@ abstract class odsTableCell {
 			$table_table_cell->setAttribute("table:number-rows-spanned", $this->numberRowsSpanned);
 		if($this->formula)
 			$table_table_cell->setAttribute("table:formula", "of:=".$this->formula);
+		if($this->numberColumnsRepeated)
+			$table_table_cell->setAttribute("table:number-columns-repeated", $this->numberColumnsRepeated);
 	}
 	
 	public function setNumberColumnsSpanned($numberColumnsSpanned) {
 		$this->numberColumnsSpanned = $numberColumnsSpanned;
+	}
+	
+	public function getNumberColumnsSpanned() {
+		if(!$this->numberColumnsSpanned) return 1;
+		return $this->numberColumnsSpanned;
 	}
 	
 	public function setNumberRowsSpanned($numberRowsSpanned) {
@@ -41,6 +49,10 @@ abstract class odsTableCell {
 	
 	public function setFormula($formula) {
 		$this->formula = $formula;
+	}
+	
+	public function setNumberColumnsRepeated($numberColumnsRepeated) {
+		$this->numberColumnsRepeated = $numberColumnsRepeated;
 	}
 	
 }
@@ -53,15 +65,15 @@ class odsTableCellEmpty extends odsTableCell {
 	
 	public function getContent(ods $ods, DOMDocument $dom) {
 		return odsTableCell::getContent($ods,$dom);
-		//$table_table_row->setAttribute("table:number-columns-repeated", "1022");
-		//return $table_table_cell;
 	}
 }
 
 class odsCoveredTableCell extends odsTableCell {
 	public function __construct() {}
 	public function getContent(ods $ods, DOMDocument $dom) {
-		return $dom->createElement('table:covered-table-cell');
+		$table_table_cell = $dom->createElement('table:covered-table-cell');
+		$this->cellOpts($table_table_cell); 
+		return $table_table_cell;
 	}
 }
 

@@ -27,7 +27,7 @@ class odsTableColumn {
 		return $table_table_column;
 	}
 
-	public function setRepeated(int $repeated) {
+	public function setRepeated($repeated) {
 		$this->repeated = $repeated;
 	}
 	

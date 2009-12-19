@@ -50,17 +50,15 @@ class odsTable {
 	}
 	
 	public function setHorizontalSplit($colones = 1) {
-		$this->setHorizontalSplitMode($colones);
-		$this->setHorizontalSplitPosition(45+90*$colones);
-		$this->setCursorPositionX(1);
-		$this->setPositionRight(1);
+		$this->setHorizontalSplitMode(2);
+		$this->setHorizontalSplitPosition($colones);
+		$this->setPositionRight($colones);
 	}
 	
-	public function setVerticalSplit($lignes = 1) {
-		$this->setVerticalSplitMode($lignes);
-		$this->setVerticalSplitPosition(19+20*$lignes);
-		$this->setCursorPositionY(1);
-		$this->setPositionBottom(1);
+	public function setVerticalSplit($lines = 1) {
+		$this->setVerticalSplitMode(2);
+		$this->setVerticalSplitPosition($lines);
+		$this->setPositionBottom($lines);
 	}
 	
 	public function addRow($odsTableRow) {
