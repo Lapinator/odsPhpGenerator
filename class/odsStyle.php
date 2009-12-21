@@ -161,6 +161,7 @@ class odsStyleTableCell extends odsStyle {
 	private $fontSize;            // opt: 18pt;
 	private $fontStyle;           // opt: italic, normal
 	private $underline;           // opt: font-color, #000000, null
+	private $fontFace;            // opt: fontFace
 	private $styleDataName;       // opt: interne
 	
 	public function __construct($name = null) {
@@ -177,8 +178,8 @@ class odsStyleTableCell extends odsStyle {
 		$this->fontSize            = false;
 		$this->fontStyle           = false;
 		$this->underline           = false;
+		$this->fontFace            = false;
 		$this->styleDataName       = false;
-		
 	}
 	
 	public function setColor($color) {
@@ -217,6 +218,10 @@ class odsStyleTableCell extends odsStyle {
 		$this->fontSize = $fontSize;
 	}
 	
+	public function setFontFace(odsFontFace $fontFace) {
+		$this->fontFace = $fontFace;
+	}
+	
 	public function getContent(ods $ods, DOMDocument $dom) {
 		// style:style
 		$style_style = parent::getContent($ods,$dom);
@@ -245,7 +250,7 @@ class odsStyleTableCell extends odsStyle {
 						$style_style->appendChild($style_paragraph_properties);
 				}
 				
-				if($this->color OR $this->fontWeight OR $this->fontStyle OR $this->underline OR $this->fontSize) {
+				if($this->color OR $this->fontWeight OR $this->fontStyle OR $this->underline OR $this->fontSize OR $this->fontFace) {
 					// style:text-properties
 					$style_text_properties = $dom->createElement('style:text-properties');
 					
@@ -274,6 +279,10 @@ class odsStyleTableCell extends odsStyle {
 							$style_text_properties->setAttribute("fo:font-size", $this->fontSize);
 							$style_text_properties->setAttribute("style:font-size-asian", $this->fontSize);
 							$style_text_properties->setAttribute("style:font-size-complex", $this->fontSize);
+						}
+						
+						if($this->fontFace) {
+							$style_text_properties->setAttribute("style:font-name", $this->fontFace->getFontName());
 						}
 						
 						$style_style->appendChild($style_text_properties);

@@ -40,8 +40,8 @@ class ods {
 		$this->styles    = array();
 		$this->tables    = array();
 		
-		$this->addFontFaces( new odsFontFace( "Nimbus Sans L", "'Nimbus Sans L'", "swiss", "variable" ) );
-		$this->addFontFaces( new odsFontFace( "Bitstream Vera Sans", "'Bitstream Vera Sans'", "system", "variable" ) );
+		$this->addFontFaces( new odsFontFace( "Nimbus Sans L", "swiss" ) );
+		$this->addFontFaces( new odsFontFace( "Bitstream Vera Sans", "system" ) );
 		
 		$this->addStyles( new odsStyleTableColumn("co1") );
 		$this->addStyles( new odsStyleTable("ta1") );
@@ -71,7 +71,7 @@ class ods {
 	
 	public function addFontFaces(odsFontFace $odsFontFace) {
 		if(in_array($odsFontFace,$this->fontFaces)) return;
-		$this->fontFaces[$odsFontFace->getName()] = $odsFontFace;
+		$this->fontFaces[$odsFontFace->getFontName()] = $odsFontFace;
 	}
 	
 	public function addStyles(odsStyle $odsStyle) {
