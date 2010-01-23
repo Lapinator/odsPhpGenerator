@@ -101,6 +101,6 @@ $row->addCell( new odsTableCellString("Webdings", $style10));
 $ods->addTable($table);
 
 // Download the file
-$ods->downloadOdsFile("Properties.ods");  
+$ods->downloadOdsFile("CellStyle.ods");  
 
 ?>

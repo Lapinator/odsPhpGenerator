@@ -54,7 +54,7 @@ $table->addRow($row);
 $ods->addTable($table);
 
 // Download the file
-$ods->downloadOdsFile("HelloWorld.ods");
+$ods->downloadOdsFile("Formula.ods");
 
 
 ?>

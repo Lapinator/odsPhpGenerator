@@ -156,6 +156,7 @@ class odsStyleTableCell extends odsStyle {
 	private $backgroundColor;     // opt: #ffffff
 	private $border;              // opt: 0.002cm solid #000000
 	private $textAlign;           // opt: center
+	private $verticalAlign;       // opt: top, middle, bottom
 	private $marginLeft;          // opt: 0cm
 	private $fontWeight;          // opt: bold
 	private $fontSize;            // opt: 18pt;
@@ -163,6 +164,9 @@ class odsStyleTableCell extends odsStyle {
 	private $underline;           // opt: font-color, #000000, null
 	private $fontFace;            // opt: fontFace
 	private $styleDataName;       // opt: interne
+	private $wrapOption;          // opt: false, wrap
+	private $hyphenate;           // opt: true, false in string
+	private $shrinkToFit;         // opt; true, false in string
 	
 	public function __construct($name = null) {
 		parent::__construct($name, "table-cell");
@@ -173,6 +177,7 @@ class odsStyleTableCell extends odsStyle {
 		$this->backgroundColor     = false;
 		$this->border              = false;
 		$this->textAlign           = false;
+		$this->verticalAlign       = false;
 		$this->marginLeft          = false;
 		$this->fontWeight          = false;
 		$this->fontSize            = false;
@@ -180,6 +185,9 @@ class odsStyleTableCell extends odsStyle {
 		$this->underline           = false;
 		$this->fontFace            = false;
 		$this->styleDataName       = false;
+		$this->wrapOption          = false;
+		$this->hyphenate           = false;
+		$this->shrinkToFit         = false;
 	}
 	
 	public function setColor($color) {
@@ -196,6 +204,10 @@ class odsStyleTableCell extends odsStyle {
 	
 	public function setTextAlign($textAlign) {
 		$this->textAlign = $textAlign;
+	}
+	
+	public function setVerticalAlign($verticalAlign) {
+		$this->verticalAlign = $verticalAlign;
 	}
 	
 	public function setFontWeight($weight) {
@@ -220,6 +232,18 @@ class odsStyleTableCell extends odsStyle {
 	
 	public function setFontFace(odsFontFace $fontFace) {
 		$this->fontFace = $fontFace;
+	}
+	
+	public function setWrapOption($wrapOption) {
+		$this->wrapOption = $wrapOption;
+	}
+	
+	public function setHyphenate($hyphenate) {
+		$this->hyphenate = $hyphenate;
+	}
+	
+	public function setShrinkToFit($shrinkToFit) {
+		$this->shrinkToFit = $shrinkToFit;
 	}
 	
 	public function getContent(ods $ods, DOMDocument $dom) {
@@ -250,7 +274,19 @@ class odsStyleTableCell extends odsStyle {
 						$style_style->appendChild($style_paragraph_properties);
 				}
 				
-				if($this->color OR $this->fontWeight OR $this->fontStyle OR $this->underline OR $this->fontSize OR $this->fontFace) {
+				if($this->verticalAlign) {
+					$style_table_cell_properties->setAttribute("style:vertical-align", $this->verticalAlign);
+				}
+				
+				if($this->wrapOption) {
+					$style_table_cell_properties->setAttribute("fo:wrap-option", $this->wrapOption);
+				}
+				
+				if($this->shrinkToFit) {
+					$style_table_cell_properties->setAttribute("style:shrink-to-fit", $this->shrinkToFit);
+				}
+				
+				if($this->color OR $this->fontWeight OR $this->fontStyle OR $this->underline OR $this->fontSize OR $this->fontFace OR $this->hyphenate) {
 					// style:text-properties
 					$style_text_properties = $dom->createElement('style:text-properties');
 					
@@ -283,6 +319,10 @@ class odsStyleTableCell extends odsStyle {
 						
 						if($this->fontFace) {
 							$style_text_properties->setAttribute("style:font-name", $this->fontFace->getFontName());
+						}
+						
+						if($this->hyphenate) {
+							$style_text_properties->setAttribute("fo:hyphenate", $this->hyphenate);
 						}
 						
 						$style_style->appendChild($style_text_properties);
