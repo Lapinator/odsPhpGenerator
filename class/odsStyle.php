@@ -45,11 +45,25 @@ abstract class odsStyle {
 class odsStyleTableColumn extends odsStyle {
 	private $breakBefore;         // auto
 	private $columnWidth;         // 2.267cm
+	private $useOptimalColumnWidth;
 	
 	public function __construct($name = null) {
 		parent::__construct($name, "table-column");
-		$this->breakBefore = "auto";
-		$this->columnWidth = "2.267cm";
+		$this->breakBefore           = "auto";
+		$this->columnWidth           = "2.267cm";
+		$this->useOptimalColumnWidth = "false";
+	}
+	
+	public function setColumnWidth($columnWidth) {
+		$this->columnWidth = $columnWidth;
+	}
+	
+	public function setBreakBefore($breakBefore) {
+		$this->breakBefore = $breakBefore;
+	}
+	
+	public function setUseOptimalColumnWidth($useOptimalColumnWidth) {
+		$this->useOptimalColumnWidth = $useOptimalColumnWidth;
 	}
 	
 	public function getContent(ods $ods,DOMDocument $dom) {
@@ -58,6 +72,7 @@ class odsStyleTableColumn extends odsStyle {
 			// style:table-column-properties
 			$style_table_column_properties = $dom->createElement('style:table-column-properties');
 				$style_table_column_properties->setAttribute("fo:break-before", $this->breakBefore);
+				$style_table_column_properties->setAttribute("style:use-optimal-column-width", $this->useOptimalColumnWidth);
 				$style_table_column_properties->setAttribute("style:column-width", $this->columnWidth);
 				$style_style->appendChild($style_table_column_properties);
 
@@ -68,13 +83,6 @@ class odsStyleTableColumn extends odsStyle {
 		return 'odsStyleTableColumn';
 	}
 	
-	public function setColumnWidth($columnWidth) {
-		$this->columnWidth = $columnWidth;
-	}
-	
-	public function setBreakBefore($breakBefore) {
-		$this->breakBefore = $breakBefore;
-	}
 }
 
 class odsStyleTable extends odsStyle {
