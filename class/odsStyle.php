@@ -43,9 +43,9 @@ abstract class odsStyle {
 }
 
 class odsStyleTableColumn extends odsStyle {
-	private $breakBefore;         // auto
-	private $columnWidth;         // 2.267cm
-	private $useOptimalColumnWidth;
+	private $breakBefore;           // auto
+	private $columnWidth;           // 2.267cm
+	private $useOptimalColumnWidth; // true, false
 	
 	public function __construct($name = null) {
 		parent::__construct($name, "table-column");

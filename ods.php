@@ -1162,12 +1162,12 @@ class ods {
 		
 		$zip->addFromString("meta.xml", $this->getMeta());
 		$zip->addFromString("content.xml", $this->getContent());
-		$zip->addFromString("files/mimetype", $this->getMimeType());
+		$zip->addFromString("mimetype", $this->getMimeType());
 		$zip->addFromString("settings.xml", $this->getSettings());
 		$zip->addFromString("styles.xml", $this->getStyles());
-		$zip->addFromString("files/Configurations2/accelerator/current.xml", $this->getAcceleratorCurrent());
+		$zip->addFromString("Configurations2/accelerator/current.xml", $this->getAcceleratorCurrent());
 		$zip->addFromString("META-INF/manifest.xml", $this->getManifest());
-		$zip->addFromString("files/Thumbnails/thumbnail.png", $this->getThumbnail());
+		$zip->addFromString("Thumbnails/thumbnail.png", $this->getThumbnail());
 		
 		foreach($this->tmpPictures AS $imgfile => $name)
 			$zip->addFile($imgfile,$name);
