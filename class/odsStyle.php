@@ -358,15 +358,15 @@ class odsStyleGraphic extends odsStyle {
 
 	public function __construct($name = null) {
 		parent::__construct($name, "graphic");
-		$this->stroke    = "none";
-		$this->fill      = "none";
-		$this->luminance = "0%";
-		$this->contrast  = "0%";
-		$this->gamma     = "100%";
-		$this->red       = "0%";
-		$this->green     = "0%";
-		$this->blue      = "0%";
-		$this->opacity   = "100%";
+		$this->stroke    = null;
+		$this->fill      = null;
+		$this->luminance = null;
+		$this->contrast  = null;
+		$this->gamma     = null;
+		$this->red       = null;
+		$this->green     = null;
+		$this->blue      = null;
+		$this->opacity   = null;
 	}
 	
 	public function setStroke($stroke) {
@@ -410,20 +410,31 @@ class odsStyleGraphic extends odsStyle {
 		
 			// style:table-row-properties
 			$style_graphic_properties = $dom->createElement('style:graphic-properties');
-				$style_graphic_properties->setAttribute("draw:stroke",        $this->stroke);
-				$style_graphic_properties->setAttribute("draw:fill",          $this->fill);
 				$style_graphic_properties->setAttribute("draw:textarea-horizontal-align", "center");
 				$style_graphic_properties->setAttribute("draw:textarea-vertical-align", "middle");
-				$style_graphic_properties->setAttribute("draw:color-mode", "standard");
-				$style_graphic_properties->setAttribute("draw:luminance",     $this->luminance);
-				$style_graphic_properties->setAttribute("draw:contrast",      $this->contrast);
-				$style_graphic_properties->setAttribute("draw:gamma",         $this->gamma);
-				$style_graphic_properties->setAttribute("draw:red",           $this->red);
-				$style_graphic_properties->setAttribute("draw:green",         $this->green);
-				$style_graphic_properties->setAttribute("draw:blue",          $this->blue);
-				$style_graphic_properties->setAttribute("fo:clip", "rect(0cm, 0cm, 0cm, 0cm)");
-				$style_graphic_properties->setAttribute("draw:image-opacity", $this->opacity);
-				$style_graphic_properties->setAttribute("style:mirror", "none");
+				//$style_graphic_properties->setAttribute("draw:color-mode", "standard");
+				//$style_graphic_properties->setAttribute("fo:clip", "rect(0cm, 0cm, 0cm, 0cm)");
+				//$style_graphic_properties->setAttribute("style:mirror", "none");
+
+				if($this->stroke)
+					$style_graphic_properties->setAttribute("draw:stroke",        $this->stroke);
+				if($this->fill)
+					$style_graphic_properties->setAttribute("draw:fill",          $this->fill);
+				if($this->luminance)
+					$style_graphic_properties->setAttribute("draw:luminance",     $this->luminance);
+				if($this->contrast)
+					$style_graphic_properties->setAttribute("draw:contrast",      $this->contrast);
+				if($this->gamma)
+					$style_graphic_properties->setAttribute("draw:gamma",         $this->gamma);
+				if($this->red)
+					$style_graphic_properties->setAttribute("draw:red",           $this->red);
+				if($this->green)
+					$style_graphic_properties->setAttribute("draw:green",         $this->green);
+				if($this->blue)
+					$style_graphic_properties->setAttribute("draw:blue",          $this->blue);
+				if($this->opacity)
+					$style_graphic_properties->setAttribute("draw:image-opacity", $this->opacity);
+				
 				$style_style->appendChild($style_graphic_properties);
 				
 		return $style_style;
@@ -431,6 +442,60 @@ class odsStyleGraphic extends odsStyle {
 
 	public function getType() {
 		return 'odsStyleGraphic';
+	}
+	
+}
+
+class odsStyleGraphicGeneric extends odsStyleGraphic {
+	
+	public function __construct() {
+		$this->name='odsStyleGraphicGeneric';
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		 
+		 $style_default_style = $dom->createElement('style:default-style');
+			 $style_default_style->setAttribute('style:family', 'graphic');
+		 
+		 $style_graphic_properties = $dom->createElement('style:graphic-properties');
+		 	$style_graphic_properties->setAttribute('draw:shadow-offset-x', '0.3cm');
+		 	$style_graphic_properties->setAttribute('draw:shadow-offset-y', '0.3cm');
+			$style_default_style->appendChild($style_graphic_properties);
+
+
+		 $style_paragraph_properties = $dom->createElement('style:paragraph-properties');
+		 	$style_paragraph_properties->setAttribute('style:text-autospace', 'ideograph-alpha');
+		 	$style_paragraph_properties->setAttribute('style:punctuation-wrap', 'simple');
+		 	$style_paragraph_properties->setAttribute('style:line-break', 'strict');
+		 	$style_paragraph_properties->setAttribute('style:writing-mode', 'page');
+		 	$style_paragraph_properties->setAttribute('style:font-independent-line-spacing', 'false');
+		 	$style_default_style->appendChild($style_paragraph_properties);
+		 	
+		 	$style_tab_stops = $dom->createElement('style:tab-stops');
+		 		$style_paragraph_properties->appendChild($style_tab_stops);
+		 	
+		 $style_text_properties = $dom->createElement('style:text-properties');
+		 	$style_text_properties->setAttribute('style:use-window-font-color', 'true');
+		 	$style_text_properties->setAttribute('fo:font-family', "'Nimbus Roman No9 L'");
+		 	$style_text_properties->setAttribute('style:font-family-generic', 'roman');
+		 	$style_text_properties->setAttribute('style:font-pitch', 'variable');
+		 	$style_text_properties->setAttribute('fo:font-size', '12pt');
+		 	$style_text_properties->setAttribute('fo:language', 'fr');
+		 	$style_text_properties->setAttribute('fo:country', 'FR');
+		 	$style_text_properties->setAttribute('style:letter-kerning', 'true');
+		 	$style_text_properties->setAttribute('style:font-size-asian', '24pt');
+		 	$style_text_properties->setAttribute('style:language-asian', 'zxx');
+		 	$style_text_properties->setAttribute('style:country-asian', 'none');
+		 	$style_text_properties->setAttribute('style:font-size-complex', '24pt');
+		 	$style_text_properties->setAttribute('style:language-complex', 'zxx');
+		 	$style_text_properties->setAttribute('style:country-complex', 'none');
+			$style_default_style->appendChild($style_text_properties);
+		 
+		 return $style_default_style;
+	}
+	
+	public function getType() {
+		return 'odsStyleGraphicGeneric';
 	}
 	
 }

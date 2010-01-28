@@ -20,7 +20,7 @@ class odsTable {
 	private	$positionTop;
 	private	$positionBottom;
 	
-	
+	private $shapes;
 	private $tableColumns;
 	private $rows;
 	
@@ -41,6 +41,7 @@ class odsTable {
 		$this->positionTop                  = 0;
 		$this->positionBottom               = 0;
 		
+		$this->shapes                       = array();
 		$this->tableColumns                 = array();
 		$this->rows                         = array();
 	}
@@ -59,6 +60,10 @@ class odsTable {
 		$this->setVerticalSplitMode(2);
 		$this->setVerticalSplitPosition($lines);
 		$this->setPositionBottom($lines);
+	}
+	
+	public function addDraw(odsDraw $odsDraw) {
+		array_push($this->shapes, $odsDraw);
 	}
 	
 	public function addRow($odsTableRow) {
@@ -114,6 +119,16 @@ class odsTable {
 			$table_table->setAttribute("table:name", $this->name);
 			$table_table->setAttribute("table:style-name", $this->styleName);
 			$table_table->setAttribute("table:print", $this->print);
+			
+			if(count($this->shapes)) {
+				$table_shapes = $dom->createElement('table:shapes');
+				
+				foreach($this->shapes as $shapes) {
+					$table_shapes->appendChild($shapes->getContent($ods,$dom));
+				}
+				
+				$table_table->appendChild($table_shapes);
+			}
 			
 			if(count($this->tableColumns)) {
 				foreach($this->tableColumns as $tableColumn) 

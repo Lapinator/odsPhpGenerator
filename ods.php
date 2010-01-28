@@ -10,6 +10,7 @@ require_once("class/odsTable.php");
 require_once("class/odsTableColumn.php");
 require_once("class/odsTableRow.php");
 require_once("class/odsTableCell.php");
+require_once("class/odsDraw.php");
 
 class ods {
 	private $defaultTable;

@@ -419,6 +419,22 @@ class odsTableCellDateTime extends odsTableCell {
 	}
 }
 
+class odsTableCellDraw extends odsTableCell {
+	private $odsDraw;
+	
+	public function __construct(odsDraw $odsDraw) {
+		$this->odsDraw = $odsDraw;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$table_table_cell = $dom->createElement('table:table-cell');
+		$this->cellOpts($table_table_cell);
+		$table_table_cell->appendChild($this->odsDraw->getContent($ods, $dom));
+		return $table_table_cell;
+	}
+	
+}
+
 class odsTableCellImage extends odsTableCell {
 	private $file;
 	private $width;
