@@ -371,6 +371,8 @@ class odsStyleGraphic extends odsStyle {
 	private $stroke;      // none
 	private $strokeWidth; // 0.1cm
 	private $strokeColor; // #000000
+	private $markerStart; // null
+	private $markerEnd;   //null
 	private $fill;        // none
  	private $luminance;   // 0%
  	private $contrast;    // 0%
@@ -385,6 +387,8 @@ class odsStyleGraphic extends odsStyle {
 		$this->stroke      = null;
 		$this->strokeWidth = null;
 		$this->strokeColor = null;
+		$this->markerStart = null;
+		$this->markerEnd   = null;
 		$this->fill        = null;
 		$this->luminance   = null;
 		$this->contrast    = null;
@@ -405,6 +409,14 @@ class odsStyleGraphic extends odsStyle {
 	
 	public function setStrokeColor($strokeColor) {
 		$this->strokeColor = $strokeColor;
+	}
+	
+	public function setMarkerStart($markerStart) {
+		$this->markerStart = $markerStart;
+	}
+
+	public function setMarkerEnd($markerEnd) {
+		$this->markerEnd = $markerEnd;
 	}
 	
 	public function setFill($fill) {
@@ -464,6 +476,14 @@ class odsStyleGraphic extends odsStyle {
 				}
 				if($this->strokeColor) {
 					$style_graphic_properties->setAttribute("svg:stroke-color",   $this->strokeColor);
+				}
+				if($this->markerStart) {
+					$style_graphic_properties->setAttribute("draw:marker-start",  $this->markerStart->getName());
+					$ods->addTmpStyles($this->markerStart);
+				}
+				if($this->markerEnd) {
+					$style_graphic_properties->setAttribute("draw:marker-end",  $this->markerEnd->getName());
+					$ods->addTmpStyles($this->markerEnd);
 				}
 				if($this->fill)
 					$style_graphic_properties->setAttribute("draw:fill",          $this->fill);
@@ -620,6 +640,87 @@ class odsStyleStrokeDashLineAndDot extends odsStyleStrokeDash {
 class odsStyleStrokeDash2Dots1Dash extends odsStyleStrokeDash {
 	public function __construct() { parent::__construct('_32__20_Dots_20_1_20_Dash','2 Dots 1 Dash','rect','2',null,'1','0.203cm','0.203cm');	}		
 	public function getType() { return 'odsStyleStrokeDashLineAndDot'; }
+}
+
+class odsStyleStrokeMarker extends odsStyle {
+	protected $displayName;
+	protected $viewBox;
+	protected $d;
+	
+	public function __construct($name, $displayName, $viewBox, $d) {
+		$this->name            = $name;
+		$this->displayName     = $displayName;
+		$this->viewBox         = $viewBox;
+		$this->d               = $d;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$draw_marker = $dom->createElement('draw:marker');
+			$draw_marker->setAttribute("style:name",        $this->name);
+			$draw_marker->setAttribute("draw:display-name", $this->displayName);
+			$draw_marker->setAttribute("svg:viewBox", $this->viewBox);
+			$draw_marker->setAttribute("svg:d", $this->d);
+		return $draw_marker;
+	}
+	
+	public function getType() {
+		return 'odsStyleStrokeMarker';
+	}
+}
+
+class odsStyleStrokeMarkerArrow extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerArrow','Marker Arrow','0 0 20 30','m10 0-10 30h20z'); }
+	public function getType() { return 'odsStyleStrokeMarkerArrow'; }
+}
+
+class odsStyleStrokeMarkerSquare extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerSquare','Marker Square','0 0 10 10','m0 0h10v10h-10z'); }
+	public function getType() { return 'odsStyleStrokeMarkerArrow'; }
+}
+
+class odsStyleStrokeMarkerNarrowArrow extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerNarrowArrow','Marker Narrow Arrow','0 0 1321 3493','m1321 3493h-1321l702-3493z'); }
+	public function getType() { return 'odsStyleStrokeMarkerNarrowArrow'; }
+}
+
+class odsStyleStrokeMarkerTipRating extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerTipRating','Marker Tip Rating','0 0 836 110','m0 0h278 278 280v36 36 38h-278-278-280v-36-36z'); }
+	public function getType() { return 'odsStyleStrokeMarkerTipRating'; }
+}
+
+class odsStyleStrokeMarkerDoubleArrow extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerDoubleArrow','Marker Double Arrow','0 0 1131 1918','m737 1131h394l-564-1131-567 1131h398l-398 787h1131z'); }
+	public function getType() { return 'odsStyleStrokeMarkerDoubleArrow'; }
+}
+
+class odsStyleStrokeMarkerSimetraArrow extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerSimetraArrow','Marker Simetra Arrow','0 0 1013 1130','m1009 1050-449-1008-22-30-29-12-34 12-21 26-449 1012-5 13v8l5 21 12 21 17 13 21 4h903l21-4 21-13 9-21 4-21v-8z'); }
+	public function getType() { return 'odsStyleStrokeMarkerSimetraArrow'; }
+}
+
+class odsStyleStrokeMarkerLineArrow extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerLineArrow','Marker Line Arrow','0 0 1122 2243','m0 2108v17 17l12 42 30 34 38 21 43 4 29-8 30-21 25-26 13-34 343-1532 339 1520 13 42 29 34 39 21 42 4 42-12 34-30 21-42v-39-12l-4 4-440-1998-9-42-25-39-38-25-43-8-42 8-38 25-26 39-8 42z'); }
+	public function getType() { return 'odsStyleStrokeMarkerLineArrow'; }
+}
+
+class odsStyleStrokeMarkerRondNarrowArrow extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerRondNarrowArrow','Marker Rond Narrow Arrow','0 0 1131 2256','m1127 2120-449-2006-9-42-25-39-38-25-38-8-43 8-38 25-25 39-9 42-449 2006v13l-4 9 9 42 25 38 38 25 42 9h903l42-9 38-25 26-38 8-42v-9z'); }
+	public function getType() { return 'odsStyleStrokeMarkerRondNarrowArrow'; }
+}
+
+class odsStyleStrokeMarkerCircleArrow extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerCircleArrow','Marker Circle Arrow','0 0 1131 1131','m462 1118-102-29-102-51-93-72-72-93-51-102-29-102-13-105 13-102 29-106 51-102 72-89 93-72 102-50 102-34 106-9 101 9 106 34 98 50 93 72 72 89 51 102 29 106 13 102-13 105-29 102-51 102-72 93-93 72-98 51-106 29-101 13z'); }
+	public function getType() { return 'odsStyleStrokeMarkerCircleArrow'; }
+}
+
+class odsStyleStrokeMarkerSquare45 extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerSquare45','Marker Square 45','0 0 1131 1131','m0 564 564 567 567-567-567-564z'); }
+	public function getType() { return 'odsStyleStrokeMarkerSquare45'; }
+}
+
+class odsStyleStrokeMarkerConcaveArrow extends odsStyleStrokeMarker {
+	public function __construct() { parent::__construct('MarkerConcaveArrow','Marker Concave Arrow','0 0 1131 1580','m1013 1491 118 89-567-1580-564 1580 114-85 136-68 148-46 161-17 161 13 153 46z'); }
+	public function getType() { return 'odsStyleStrokeMarkerConcaveArrow'; }
 }
 
 
