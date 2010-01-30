@@ -5,7 +5,7 @@
  */
  
 abstract class odsDraw {
-	protected $styleName;
+	protected $styleGraphic;
 	protected $zIndex;
 	
 	abstract function __construct();
@@ -18,16 +18,19 @@ abstract class odsDraw {
 }
 
 class odsDrawLine extends odsDraw {
+	private $styleParagraph;
 	private $x1; // 1cm
 	private $y1; // 1cm
 	private $x2; // 2cm
 	private $y2; // 2cm
 	
-	static private $defaultStyle = null; 
+	static private $defaultStyle = null;
+	static private $defaultStyleParagraph = null;
 
 	
-	public function __construct($x1, $y1, $x2, $y2, $odsStyleGraphic = null) {
-		$this->styleName = $odsStyleGraphic;
+	public function __construct($x1, $y1, $x2, $y2, $odsStyleGraphic = null, $odsStyleParagraph = null ) {
+		$this->styleGraphic   = $odsStyleGraphic;
+		$this->styleParagraph = $odsStyleParagraph;
 		$this->x1        = $x1;
 		$this->y1        = $y1;
 		$this->x2        = $x2;
@@ -36,17 +39,24 @@ class odsDrawLine extends odsDraw {
 	}
 	
 	function getContent(ods $ods, DOMDocument $dom) {
-		if($this->styleName)
-			$style = $this->styleName;
+
+		if($this->styleGraphic)
+			$style = $this->styleGraphic;
 		else 
 			$style = self::getOdstyleGraphic();
+
+		if($this->styleParagraph)
+			$styleParagraph = $this->styleParagraph;
+		else 
+			$styleParagraph = self::getOdstyleParagraph();			
 		
 		$ods->addTmpStyles($style);
-		
+		$ods->addTmpStyles($styleParagraph);
+				
 		$draw_line = $dom->createElement('draw:line');
 			$draw_line->setAttribute('draw:z-index', $this->zIndex);
 			$draw_line->setAttribute('draw:style-name', $style->getName());
-			$draw_line->setAttribute('draw:text-style-name', 'P1');
+			$draw_line->setAttribute('draw:text-style-name', $styleParagraph->getName());
 			$draw_line->setAttribute('svg:x1', $this->x1);
 			$draw_line->setAttribute('svg:y1', $this->y1);
 			$draw_line->setAttribute('svg:x2', $this->x2);
@@ -62,6 +72,12 @@ class odsDrawLine extends odsDraw {
 		if(!self::$defaultStyle)
 			self::$defaultStyle = new odsStyleGraphic("gr-line"); 
 		return self::$defaultStyle;
+	}
+	
+	static public function getOdstyleParagraph() {
+		if(!self::$defaultStyleParagraph)
+			self::$defaultStyleParagraph = new odsStyleParagraph("p1");
+		return self::$defaultStyleParagraph;
 	}
 	
 	public function getType() {

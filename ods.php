@@ -84,6 +84,7 @@ class ods {
 		if(in_array($odsStyle,$this->styles)) return;
 		if(in_array($odsStyle,$this->tmpStyles)) return;
 		$this->tmpStyles[$odsStyle->getName()] = $odsStyle;
+		//echo "addTmpStyles:".$odsStyle->getName()."\n";
 	}
 	
 	public function addTmpPictures($file) {
@@ -185,8 +186,13 @@ class ods {
 					foreach($this->tables as $table)
 						$office_spreadsheet->appendChild($table->getContent($this,$dom));
 		
-			foreach($this->tmpStyles as $style)
+			// the $this->tmpStyle can change in for ( add new elemements only )
+			for($i=0; $i<count($this->tmpStyles); $i++) {
+				$keys = array_keys($this->tmpStyles);
+				$style = $this->tmpStyles[$keys[$i]];
+				//echo "createTmpStyle:".$style->getName()."\n";
 				$office_automatic_styles->appendChild($style->getContent($this,$dom));
+			}
 		
 		return $dom->saveXML();
 	}

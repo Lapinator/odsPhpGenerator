@@ -156,6 +156,28 @@ class odsStyleTableRow extends odsStyle {
 	}
 }
 
+class odsStyleParagraph extends odsStyle {
+	
+	public function __construct($name = null) {
+		parent::__construct($name, "paragraph");
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$style_style = parent::getContent($ods,$dom);
+			
+			// style:table-row-properties
+			$style_paragraph_properties = $dom->createElement('style:paragraph-properties');
+				$style_paragraph_properties->setAttribute("fo:text-align", 'center');
+				$style_style->appendChild($style_paragraph_properties);
+				
+		return $style_style; 
+	}
+	
+	public function getType() {
+		return 'odsStyleParagraph';
+	}
+}
+
 class odsStyleTableCell extends odsStyle {
 	private $parentStyleName;     // Default
 	private $textAlignSource;     // fix
@@ -346,31 +368,43 @@ class odsStyleTableCell extends odsStyle {
 }
 
 class odsStyleGraphic extends odsStyle {
-	private $stroke;    // none
-	private $fill;      // none
- 	private $luminance; // 0%
- 	private $contrast;  // 0%
- 	private $gamma;     // 100%
- 	private $red;       // 0%
- 	private $green;     // 0%
- 	private $blue;      // 0%  
- 	private $opacity;   // 100%
+	private $stroke;      // none
+	private $strokeWidth; // 0.1cm
+	private $strokeColor; // #000000
+	private $fill;        // none
+ 	private $luminance;   // 0%
+ 	private $contrast;    // 0%
+ 	private $gamma;       // 100%
+ 	private $red;         // 0%
+ 	private $green;       // 0%
+ 	private $blue;        // 0%  
+ 	private $opacity;     // 100%
 
 	public function __construct($name = null) {
 		parent::__construct($name, "graphic");
-		$this->stroke    = null;
-		$this->fill      = null;
-		$this->luminance = null;
-		$this->contrast  = null;
-		$this->gamma     = null;
-		$this->red       = null;
-		$this->green     = null;
-		$this->blue      = null;
-		$this->opacity   = null;
+		$this->stroke      = null;
+		$this->strokeWidth = null;
+		$this->strokeColor = null;
+		$this->fill        = null;
+		$this->luminance   = null;
+		$this->contrast    = null;
+		$this->gamma       = null;
+		$this->red         = null;
+		$this->green       = null;
+		$this->blue        = null;
+		$this->opacity     = null;
 	}
 	
-	public function setStroke($stroke) {
+	public function setStroke(odsStyleStrokeDash $stroke) {
 		$this->stroke = $stroke;
+	}
+	
+	public function setStrokeWidth($strokeWidth) {
+		$this->strokeWidth = $strokeWidth;
+	}
+	
+	public function setStrokeColor($strokeColor) {
+		$this->strokeColor = $strokeColor;
 	}
 	
 	public function setFill($fill) {
@@ -416,8 +450,21 @@ class odsStyleGraphic extends odsStyle {
 				//$style_graphic_properties->setAttribute("fo:clip", "rect(0cm, 0cm, 0cm, 0cm)");
 				//$style_graphic_properties->setAttribute("style:mirror", "none");
 
-				if($this->stroke)
-					$style_graphic_properties->setAttribute("draw:stroke",        $this->stroke);
+				if($this->stroke) {
+					$style_graphic_properties->setAttribute("draw:stroke",        'dash');
+					$style_graphic_properties->setAttribute("draw:stroke-dash",   $this->stroke->getName());
+					$ods->addTmpStyles($this->stroke);
+				}
+				if($this->strokeWidth) {
+					$style_graphic_properties->setAttribute("svg:stroke-width",   $this->strokeWidth);
+					$style_graphic_properties->setAttribute("fo:padding-top",     $this->strokeWidth);
+					$style_graphic_properties->setAttribute("fo:padding-bottom",  $this->strokeWidth);
+					$style_graphic_properties->setAttribute("fo:padding-left",    $this->strokeWidth);
+					$style_graphic_properties->setAttribute("fo:padding-right",   $this->strokeWidth);	
+				}
+				if($this->strokeColor) {
+					$style_graphic_properties->setAttribute("svg:stroke-color",   $this->strokeColor);
+				}
 				if($this->fill)
 					$style_graphic_properties->setAttribute("draw:fill",          $this->fill);
 				if($this->luminance)
@@ -497,7 +544,82 @@ class odsStyleGraphicGeneric extends odsStyleGraphic {
 	public function getType() {
 		return 'odsStyleGraphicGeneric';
 	}
+}
+
+class odsStyleStrokeDash extends odsStyle {
+	protected $displayName;
+	protected $drawStyle;
+	protected $drawDots1;
+	protected $drawDots1Length;
+	protected $drawDots2;
+	protected $drawDots2Length;
+	protected $drawDistance;
 	
+	protected function __construct($name, $displayName,$drawStyle,$drawDots1,$drawDots1Length,$drawDots2,$drawDots2Length,$drawDistance) {
+		$this->name            = $name;
+		$this->displayName     = $displayName;
+		$this->drawStyle       = $drawStyle;
+		$this->drawDots1       = $drawDots1;
+		$this->drawDots1Length = $drawDots1Length;
+		$this->drawDots2       = $drawDots2;
+		$this->drawDots2Length = $drawDots2Length;
+		$this->drawDistance    = $drawDistance;
+	}
+	
+	function getContent(ods $ods, DOMDocument $dom) {
+		$draw_stroke_dash = $dom->createElement('draw:stroke-dash');
+			$draw_stroke_dash->setAttribute('draw:name',         $this->name);
+			$draw_stroke_dash->setAttribute('draw:display-name', $this->displayName);
+			$draw_stroke_dash->setAttribute('draw:style',        $this->drawStyle);
+			$draw_stroke_dash->setAttribute('draw:dots1',        $this->drawDots1);
+			if($this->drawDots1Length)
+				$draw_stroke_dash->setAttribute('draw:dots1-length', $this->drawDots1Length);
+			if($this->drawDots2)
+				$draw_stroke_dash->setAttribute('draw:dots2',        $this->drawDots2);
+			if($this->drawDots2Length)
+				$draw_stroke_dash->setAttribute('draw:dots2-length', $this->drawDots2Length);
+			$draw_stroke_dash->setAttribute('draw:distance',     $this->drawDistance);
+		return $draw_stroke_dash;
+	}
+	
+	public function getType() {
+		return 'odsStyleStrokeDash';
+	}
+}
+
+class odsStyleStrokeDashUltrafine extends odsStyleStrokeDash {
+	public function __construct() { parent::__construct('Ultrafine_20_Dashed','Ultrafine Dashed','rect','1','0.051cm','1','0.051cm','0.051cm');	}		
+	public function getType() {	return 'odsStyleStrokeDashUltrafine'; }
+}
+
+class odsStyleStrokeDashUltrafineVar extends odsStyleStrokeDash {
+	public function __construct() { parent::__construct('Fine_20_Dashed_20__28_var_29_','Fine Dashed (var)','rect','1','197%',null,null,'197%');	}		
+	public function getType() {	return 'UltrafineVar'; }
+}
+
+class odsStyleStrokeDashFine extends odsStyleStrokeDash {
+	public function __construct() { parent::__construct('Fine_20_Dashed','Fine Dashed','rect','1','0.508cm','1','0.508cm','0.508cm');	}		
+	public function getType() { return 'odsStyleStrokeDashFine'; }
+}
+
+class odsStyleStrokeDashUltrafineAndDots extends odsStyleStrokeDash {
+	public function __construct() { parent::__construct('Ultrafine_20_2_20_Dots_20_3_20_Dashes','Ultrafine 2 Dots 3 Dashes','rect','2','0.051cm','3','0.254cm','0.254cm');	}		
+	public function getType() { return 'odsStyleStrokeDashUltrafineAndDots'; }
+}
+
+class odsStyleStrokeDashFineDotted extends odsStyleStrokeDash {
+	public function __construct() { parent::__construct('Fine_20_Dotted','Fine Dotted','rect','1',null,null,null,'0.457cm');	}		
+	public function getType() { return 'odsStyleStrokeDashFineDotted'; }
+}
+
+class odsStyleStrokeDashLineAndDot extends odsStyleStrokeDash {
+	public function __construct() { parent::__construct('Line_20_with_20_Fine_20_Dots','Line_20_with_20_Fine_20_Dots','rect','1','2.007cm','10',null,'0.152cm');	}		
+	public function getType() { return 'odsStyleStrokeDashLineAndDot'; }
+}
+
+class odsStyleStrokeDash2Dots1Dash extends odsStyleStrokeDash {
+	public function __construct() { parent::__construct('_32__20_Dots_20_1_20_Dash','2 Dots 1 Dash','rect','2',null,'1','0.203cm','0.203cm');	}		
+	public function getType() { return 'odsStyleStrokeDashLineAndDot'; }
 }
 
 
