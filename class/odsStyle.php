@@ -368,35 +368,41 @@ class odsStyleTableCell extends odsStyle {
 }
 
 class odsStyleGraphic extends odsStyle {
-	private $stroke;      // none
-	private $strokeWidth; // 0.1cm
-	private $strokeColor; // #000000
-	private $markerStart; // null
-	private $markerEnd;   //null
-	private $fill;        // none
- 	private $luminance;   // 0%
- 	private $contrast;    // 0%
- 	private $gamma;       // 100%
- 	private $red;         // 0%
- 	private $green;       // 0%
- 	private $blue;        // 0%  
- 	private $opacity;     // 100%
+	private $stroke;          // none
+	private $strokeWidth;     // 0.1cm
+	private $strokeColor;     // #000000
+	private $markerStart;     // odsStyleStrokeMarker
+	private $markerEnd;       // odsStyleStrokeMarker
+	private $fill;            // none, solid, gradient, hatch, bitmap
+	private $fillColor;       // #000000
+	private $fillGradient;    // odsStyleGradient, null
+	private $fillHash;        // odsStyleHash, null
+	private $fillImage;       // odsStyleFillImage, null
+ 	private $luminance;       // 0%
+ 	private $contrast;        // 0%
+ 	private $gamma;           // 100%
+ 	private $red;             // 0%
+ 	private $green;           // 0%
+ 	private $blue;            // 0%  
+ 	private $opacity;         // 100%
 
 	public function __construct($name = null) {
 		parent::__construct($name, "graphic");
-		$this->stroke      = null;
-		$this->strokeWidth = null;
-		$this->strokeColor = null;
-		$this->markerStart = null;
-		$this->markerEnd   = null;
-		$this->fill        = null;
-		$this->luminance   = null;
-		$this->contrast    = null;
-		$this->gamma       = null;
-		$this->red         = null;
-		$this->green       = null;
-		$this->blue        = null;
-		$this->opacity     = null;
+		$this->stroke       = null;
+		$this->strokeWidth  = null;
+		$this->strokeColor  = null;
+		$this->markerStart  = null;
+		$this->markerEnd    = null;
+		$this->fill         = null;
+		$this->fillColor    = null;
+		$this->fillGradient = null;
+		$this->luminance    = null;
+		$this->contrast     = null;
+		$this->gamma        = null;
+		$this->red          = null;
+		$this->green        = null;
+		$this->blue         = null;
+		$this->opacity      = null;
 	}
 	
 	public function setStroke(odsStyleStrokeDash $stroke) {
@@ -422,6 +428,27 @@ class odsStyleGraphic extends odsStyle {
 	public function setFill($fill) {
 		$this->fill = $fill;
 	}
+	
+	public function setFillColor($fillColor) {
+		$this->fillColor = $fillColor;
+		$this->setFill("solid");
+	}
+	
+	public function setFillGradient(odsStyleGradient $fillGradient) {
+		$this->fillGradient = $fillGradient;
+		$this->setFill("gradient");
+	}
+	
+	public function setFillHash(odsStyleHatch $fillHash) {
+		$this->fillHash = $fillHash;
+		$this->setFill("hatch");
+	}
+
+	public function setFillImage(odsStyleFillImage $fillImage) {
+		$this->fillImage = $fillImage;
+		$this->setFill("bitmap");
+	}
+
 	
 	public function setLuminance($luminance) {
 		$this->luminance = $luminance;
@@ -487,6 +514,20 @@ class odsStyleGraphic extends odsStyle {
 				}
 				if($this->fill)
 					$style_graphic_properties->setAttribute("draw:fill",          $this->fill);
+				if($this->fillColor)
+					$style_graphic_properties->setAttribute("draw:fill-color",    $this->fillColor);
+				if($this->fillGradient) {
+					$style_graphic_properties->setAttribute("draw:fill-gradient-name", $this->fillGradient->getName());
+					$ods->addTmpStyles($this->fillGradient);
+				}
+				if($this->fillHash) {
+					$style_graphic_properties->setAttribute("draw:fill-hatch-name", $this->fillHash->getName());
+					$ods->addTmpStyles($this->fillHash);
+				}
+				if($this->fillImage) {
+					$style_graphic_properties->setAttribute("draw:fill-image-name", $this->fillImage->getName());
+					$ods->addTmpStyles($this->fillImage);
+				}
 				if($this->luminance)
 					$style_graphic_properties->setAttribute("draw:luminance",     $this->luminance);
 				if($this->contrast)
@@ -723,13 +764,425 @@ class odsStyleStrokeMarkerConcaveArrow extends odsStyleStrokeMarker {
 	public function getType() { return 'odsStyleStrokeMarkerConcaveArrow'; }
 }
 
+class odsStyleGradient extends odsStyle {
+	private $displayName;        // the name in interface
+	private $drawStyle;          // "linear", "axial", "radial", "ellipsoid", "square", "rectangular"
+	private $drawCx;             // 30%
+	private $drawCy;             // 30%
+	private $drawStartColor;     // #FFFFFF
+	private $drawEndColor;       // #000000
+	private $drawStartIntensity; // 100%
+	private $drawEndIntensity;   // 100%
+	private $drawAngle;          // 300
+	private $drawBorder;         // 0%
+	
+	public function __construct($name, $displayName) {
+		
+		$this->name           = $name;
+		$this->displayName    = $displayName;
+
+		$this->drawStyle          = null;
+		$this->drawCx             = null;
+		$this->drawCy             = null;
+		$this->drawStartColor     = null;
+		$this->drawEndColor       = null;
+		$this->drawStartIntensity = null;
+		$this->drawEndIntensity   = null;
+		$this->drawAngle          = null;
+		$this->drawBorder         = null;
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$draw_gradient = $dom->createElement('draw:gradient');
+			$draw_gradient->setAttribute("draw:name",            $this->name);
+			$draw_gradient->setAttribute("draw:display-name",    $this->displayName);
+			if($this->drawStyle)
+				$draw_gradient->setAttribute("draw:style",           $this->drawStyle);
+			if($this->drawCx)
+				$draw_gradient->setAttribute("draw:cx",              $this->drawCx);
+			if($this->drawCy)
+				$draw_gradient->setAttribute("draw:cy",              $this->drawCy);
+			if($this->drawStartColor)
+				$draw_gradient->setAttribute("draw:start-color",     $this->drawStartColor);
+			if($this->drawEndColor)
+				$draw_gradient->setAttribute("draw:end-color",       $this->drawEndColor);
+			if($this->drawStartIntensity)
+				$draw_gradient->setAttribute("draw:start-intensity", $this->drawStartIntensity);
+			if($this->drawEndIntensity)
+				$draw_gradient->setAttribute("draw:end-intensity",   $this->drawEndIntensity);
+			if($this->drawAngle)
+				$draw_gradient->setAttribute("draw:angle",           $this->drawAngle);
+			if($this->drawBorder)
+				$draw_gradient->setAttribute("draw:border",          $this->drawBorder);
+		return $draw_gradient;
+	}
+
+	public function setDrawStyle($drawStyle)               { $this->drawStyle          = $drawStyle; }
+	public function setDrawCx($Cx)                         { $this->drawCx             = $Cx; }
+	public function setDrawCy($Cy)                         { $this->drawCy             = $Cy; }
+	public function setDrawStartColor($startColor)         { $this->drawStartColor     = $startColor; }
+	public function setDrawEndColor($endColor)             { $this->drawEndColor       = $endColor; }
+	public function setDrawStartIntensity($startIntensity) { $this->drawStartIntensity = $startIntensity; }
+	public function setDrawEndIntensity($endIntensity)     { $this->drawEndIntensity   = $endIntensity; }
+	public function setDrawAngle($angle)                   { $this->drawAngle          = $angle; }
+	public function setDrawBorder($border)                 { $this->drawBorder         = $border; }
+
+	public function getType() {
+		return 'odsStyleGradient';
+	}
+	
+}
+
+class odsStyleGradientGradient1 extends odsStyleGradient {
+	
+	public function __construct() {
+		parent::__construct("Gradient_20_1", "Gradient 1");
+		$this->setDrawStyle("linear");
+		$this->setDrawStartColor("#000000");
+		$this->setDrawEndColor("#ffffff");
+		$this->setDrawStartIntensity("100%");
+		$this->setDrawEndIntensity("100%");
+		$this->setDrawAngle("0");
+		$this->setDrawBorder("0%");
+	}
+
+	public function getType() {
+		return 'odsStyleGradientGradient1';
+	}
+	
+}
+
+class odsStyleGradientGradient2 extends odsStyleGradient {
+	
+	public function __construct() {
+		parent::__construct("Gradient_20_2", "Gradient 2");
+		$this->setDrawStyle("axial");
+		$this->setDrawStartColor("#000080");
+		$this->setDrawEndColor("#800000");
+		$this->setDrawStartIntensity("100%");
+		$this->setDrawEndIntensity("100%");
+		$this->setDrawAngle("300");
+		$this->setDrawBorder("10%");
+	}
+
+	public function getType() {
+		return 'odsStyleGradientGradient2';
+	}
+	
+}
+
+class odsStyleGradientGradient3 extends odsStyleGradient {
+
+	public function __construct() {
+		parent::__construct("Gradient_20_3", "Gradient 3");
+		$this->setDrawStyle("radial");
+		$this->setDrawCx("30%");
+		$this->setDrawCy("30%");
+		$this->setDrawStartColor("#800000");
+		$this->setDrawEndColor("#ffff00");
+		$this->setDrawStartIntensity("100%");
+		$this->setDrawEndIntensity("100%");
+		$this->setDrawBorder("20%");
+	}
+
+	public function getType() {
+		return 'odsStyleGradientGradient3';
+	}
+	
+}
+
+class odsStyleGradientGradient4 extends odsStyleGradient {
+
+	public function __construct() {
+		parent::__construct("Gradient_20_4", "Gradient 4");
+		$this->setDrawStyle("ellipsoid");
+		$this->setDrawCx("40%");
+		$this->setDrawCy("40%");
+		$this->setDrawStartColor("#ffff00");
+		$this->setDrawEndColor("#008000");
+		$this->setDrawStartIntensity("100%");
+		$this->setDrawEndIntensity("100%");
+		$this->setDrawAngle("900");
+		$this->setDrawBorder("30%");
+	}
+
+	public function getType() {
+		return 'odsStyleGradientGradient4';
+	}
+	
+}
+
+class odsStyleGradientGradient5 extends odsStyleGradient {
+
+	public function __construct() {
+		parent::__construct("Gradient_20_5", "Gradient 5");
+		$this->setDrawStyle("square");
+		$this->setDrawCx("50%");
+		$this->setDrawCy("50%");
+		$this->setDrawStartColor("#008000");
+		$this->setDrawEndColor("#800080");
+		$this->setDrawStartIntensity("100%");
+		$this->setDrawEndIntensity("100%");
+		$this->setDrawAngle("1200");
+		$this->setDrawBorder("40%");
+	}
+
+	public function getType() {
+		return 'odsStyleGradientGradient5';
+	}
+	
+}
+
+class odsStyleGradientGradient6 extends odsStyleGradient {
+
+	public function __construct() {
+		parent::__construct("Gradient_20_6", "Gradient 6");
+		$this->setDrawStyle("rectangular");
+		$this->setDrawCx("60%");
+		$this->setDrawCy("60%");
+		$this->setDrawStartColor("#800080");
+		$this->setDrawEndColor("#ffff00");
+		$this->setDrawStartIntensity("100%");
+		$this->setDrawEndIntensity("100%");
+		$this->setDrawAngle("1900");
+		$this->setDrawBorder("50%");
+	}
+
+	public function getType() {
+		return 'odsStyleGradientGradient6';
+	}
+	
+}
+
+class odsStyleHatch extends odsStyle {
+	
+	private $displayName;    // the name in interface
+	private $drawStyle;      // "single"
+	private $drawColor;      // #000000
+	private $drawDistance;   // "0.102cm"
+	private $drawRotation;   // 0
+
+	public function __construct($name, $displayName) {
+		
+		$this->name           = $name;
+		$this->displayName    = $displayName;
+		
+		$this->drawStyle      = null;
+		$this->drawColor      = null;
+		$this->drawDistance   = null;
+		$this->drawRotation   = null;
+	
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		$draw_gradient = $dom->createElement('draw:hatch');
+			$draw_gradient->setAttribute("draw:name",            $this->name);
+			$draw_gradient->setAttribute("draw:display-name",    $this->displayName);
+			if($this->drawStyle)
+				$draw_gradient->setAttribute("draw:style",       $this->drawStyle);
+			if($this->drawColor)
+				$draw_gradient->setAttribute("draw:color",       $this->drawColor);
+			if($this->drawDistance)
+				$draw_gradient->setAttribute("draw:distance",    $this->drawDistance);
+			if($this->drawRotation)
+				$draw_gradient->setAttribute("draw:rotation",    $this->drawRotation);
+		return $draw_gradient;
+	}
+	
+	public function setDrawStyle($style)       { $this->drawStyle    = $style; }
+	public function setDrawColor($color)       { $this->drawColor    = $color; }
+	public function setDrawDistance($distance) { $this->drawDistance = $distance; }
+	public function setDrawRotation($rotation) { $this->drawRotation = $rotation; }
+	
+	public function getType() {
+		return 'odsStyleHatch';
+	}
+}
+
+class odsStyleHatchBlack0Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Black_20_0_20_Degrees", "Black 0 Degrees");
+		$this->setDrawStyle("single");
+		$this->setDrawColor("#000000");
+		$this->setDrawDistance("0.102cm");
+		$this->setDrawRotation("0");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchBlack0Degrees';
+	}
+	
+}
+
+class odsStyleHatchBlack45Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Black_20_45_20_Degrees", "Black 45 Degrees");
+		$this->setDrawStyle("single");
+		$this->setDrawColor("#000000");
+		$this->setDrawDistance("0.102cm");
+		$this->setDrawRotation("450");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchBlack45Degrees';
+	}
+	
+}
+
+class odsStyleHatchBlackLess45Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Black_20_-45_20_Degrees", "Black -45 Degrees");
+		$this->setDrawStyle("single");
+		$this->setDrawColor("#000000");
+		$this->setDrawDistance("0.102cm");
+		$this->setDrawRotation("3150");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchBlackLess45Degrees';
+	}
+	
+}
+
+class odsStyleHatchBlack90Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Black_20_90_20_Degrees", "Black 90 Degrees");
+		$this->setDrawStyle("single");
+		$this->setDrawColor("#000000");
+		$this->setDrawDistance("0.102cm");
+		$this->setDrawRotation("900");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchBlack90Degrees';
+	}
+	
+}
+
+class odsStyleHatchRedCrossed45Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Red_20_Crossed_20_45_20_Degrees", "Red Crossed 45 Degrees");
+		$this->setDrawStyle("double");
+		$this->setDrawColor("#800000");
+		$this->setDrawDistance("0.076cm");
+		$this->setDrawRotation("450");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchRedCrossed45Degrees';
+	}
+	
+}
+
+class odsStyleHatchRedCrossed0Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Red_20_Crossed_20_0_20_Degrees", "Red Crossed 0 Degrees");
+		$this->setDrawStyle("double");
+		$this->setDrawColor("#800000");
+		$this->setDrawDistance("0.076cm");
+		$this->setDrawRotation("900");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchRedCrossed0Degrees';
+	}
+	
+}
+
+class odsStyleHatchBlueCrossed45Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Blue_20_Crossed_20_45_20_Degrees", "Blue Crossed 45 Degrees");
+		$this->setDrawStyle("double");
+		$this->setDrawColor("#000080");
+		$this->setDrawDistance("0.076cm");
+		$this->setDrawRotation("450");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchBlueCrossed45Degrees';
+	}
+	
+}
+
+class odsStyleHatchBlueCrossed0Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Blue_20_Crossed_20_0_20_Degrees", "Blue Crossed 0 Degrees");
+		$this->setDrawStyle("double");
+		$this->setDrawColor("#000080");
+		$this->setDrawDistance("0.076cm");
+		$this->setDrawRotation("900");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchBlueCrossed0Degrees';
+	}
+		
+}
+
+class odsStyleHatchBlueTriple90Degrees extends odsStyleHatch {
+	
+	public function __construct() {
+		parent::__construct("Blue_20_Triple_20_90_20_Degrees", "Blue Triple 90 Degrees");
+		$this->setDrawStyle("triple");
+		$this->setDrawColor("#0000ff");
+		$this->setDrawDistance("0.102cm");
+		$this->setDrawRotation("900");
+	}
+
+	public function getType() {
+		return 'odsStyleHatchBlueTriple90Degrees';
+	}
+		
+}
+
+class odsStyleFillImage extends odsStyle {
+	
+	private $xlinkHref;
+	private $xlinkType;
+	private $xlinkShow;
+	
+	public function __construct($name, $file, $xlinkType="simple", $xlinkShow="embed") {
+		
+		$this->name           = $name;
+		$this->file           = $file;
+		$this->xlinkType      = $xlinkType;
+		$this->xlinkShow      = $xlinkShow;		
+	
+	}
+	
+	public function getContent(ods $ods, DOMDocument $dom) {
+		
+		$xlinkHref = $ods->addTmpPictures($this->file);
+			
+		$draw_gradient = $dom->createElement('draw:fill-image');
+			$draw_gradient->setAttribute("draw:name",      $this->name);
+			$draw_gradient->setAttribute("xlink:href",     $xlinkHref);
+			$draw_gradient->setAttribute("xlink:type",     $this->xlinkType);
+			$draw_gradient->setAttribute("xlink:show",     $this->xlinkShow);
+			$draw_gradient->setAttribute("xlink:actuate",  "onLoad");
+		return $draw_gradient;
+	}
+	
+	public function getType() {
+		return 'odsStylefillImage';
+	}	
+	
+}
+
 
 abstract class odsStyleMoney extends odsStyle {
 	//abstract protected function __construct();
 	//abstract protected function getContent();
 	//abstract protected function getType();
 }
-
 
 class odsStyleMoneyEUR extends odsStyleMoney {
 	

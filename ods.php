@@ -89,7 +89,7 @@ class ods {
 	
 	public function addTmpPictures($file) {
 		if(in_array($file,$this->tmpPictures)) return;
-		$this->tmpPictures[$file] = "Pictures/".md5(time().rand()).'.jpg';
+		$this->tmpPictures[$file] = "Pictures/".md5(time().rand()).'.png';
 		return $this->tmpPictures[$file];
 	}
 	
@@ -1190,7 +1190,6 @@ class ods {
 		readfile($tmpfile);
 		unlink($tmpfile);
 	}
-
 
 }
  

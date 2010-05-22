@@ -9,7 +9,7 @@ class odsTableRow {
 	private $cells;
 	
 	public function __construct(odsStyleTableRow $odsStyleTableRow = null) {
-		if($odsStyleTableRow) $this->styleName = $odsStyleTableRow->getName;
+		if($odsStyleTableRow) $this->styleName = $odsStyleTableRow->getName();
 		else                  $this->styleName = "ro1";
 		$this->cells                           = array();
 	}
