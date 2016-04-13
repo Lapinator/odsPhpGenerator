@@ -11,7 +11,7 @@ abstract class odsTableCell {
 	protected $formula;
 	protected $numberColumnsRepeated;
 	
-	abstract protected function __construct();
+	//abstract protected function __construct();
 	
 	protected function getContent(ods $ods, DOMDocument $dom) {
 		$table_table_cell = $dom->createElement('table:table-cell');

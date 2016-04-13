@@ -9,7 +9,7 @@ abstract class odsDraw {
 	protected $zIndex;           // number 
 	protected $tableBackground;  // "true", "false", null
 	
-	abstract function __construct();
+	//abstract function __construct();
 	abstract function getContent(ods $ods, DOMDocument $dom);
 	abstract protected function getType();
 	
