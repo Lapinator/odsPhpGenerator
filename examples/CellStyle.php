@@ -1,7 +1,14 @@
 <?php
 
 // Load library
-require_once('../ods.php');
+require_once '../vendor/autoload.php';
+
+use odsPhpGenerator\ods;
+use odsPhpGenerator\odsStyleTableCell;
+use odsPhpGenerator\odsFontFace;
+use odsPhpGenerator\odsTable;
+use odsPhpGenerator\odsTableRow;
+use odsPhpGenerator\odsTableCellString;
 
 // Create Ods object
 $ods  = new ods();

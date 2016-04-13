@@ -2,8 +2,13 @@
 
 // All file is writen in UTF-8
 
+use odsPhpGenerator\ods;
+use odsPhpGenerator\odsTable;
+use odsPhpGenerator\odsTableRow;
+use odsPhpGenerator\odsTableCellString;
+
 // Load library
-require_once('../ods.php');
+require_once '../vendor/autoload.php';
 
 // Create Ods object
 $ods  = new ods();

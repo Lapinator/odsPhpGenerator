@@ -4,6 +4,8 @@
  * License : GNU Lesser General Public License v3
  */
 
+namespace  odsPhpGenerator;
+
 class odsTableRow {
 	private $styleName;
 	private $cells;
@@ -18,7 +20,7 @@ class odsTableRow {
 		array_push($this->cells,$odsTableCell);
 	}
 	
-	public function getContent(ods $ods, DOMDocument $dom) {
+	public function getContent(ods $ods, \DOMDocument $dom) {
 		$table_table_row = $dom->createElement('table:table-row');
 			$table_table_row->setAttribute("table:style-name", $this->styleName);
 		

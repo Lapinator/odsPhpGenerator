@@ -1,7 +1,9 @@
 <?php
 
 // Load library
-require_once('../ods.php');
+require_once '../vendor/autoload.php';
+
+use odsPhpGenerator\ods;
 
 // Create Ods object
 $ods  = new ods();

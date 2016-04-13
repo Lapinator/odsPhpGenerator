@@ -5,6 +5,8 @@
  * License : GNU Lesser General Public License v3
  */
 
+namespace  odsPhpGenerator;
+
 class odsTableColumn {
 	//private $styleName;
 	private $repeated;
@@ -15,7 +17,7 @@ class odsTableColumn {
 		$this->repeated = null;
 	}
 	
-	public function getContent(ods $ods,DOMDocument $dom) {
+	public function getContent(ods $ods,\DOMDocument $dom) {
 		if(!$ods->getStyleByName($this->odsStyleTableColumn->getName()))
 			$ods->addTmpStyles($this->odsStyleTableColumn);
 		

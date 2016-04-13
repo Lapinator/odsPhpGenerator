@@ -1,6 +1,20 @@
 <?php
 // Load library
-require_once('../ods.php');
+require_once '../vendor/autoload.php';
+
+use odsPhpGenerator\ods;
+use odsPhpGenerator\odsTableRow;
+use odsPhpGenerator\odsTable;
+use odsPhpGenerator\odsTableCellString;
+use odsPhpGenerator\odsTableCellEmpty;
+use odsPhpGenerator\odsTableCellStringEmail;
+use odsPhpGenerator\odsTableCellStringUrl;
+use odsPhpGenerator\odsTableCellFloat;
+use odsPhpGenerator\odsTableCellDate;
+use odsPhpGenerator\odsTableCellTime;
+use odsPhpGenerator\odsTableCellDateTime;
+use odsPhpGenerator\odsTableCellCurrency;
+use odsPhpGenerator\odsTableCellImage;
 
 // Create Ods object
 $ods  = new ods();

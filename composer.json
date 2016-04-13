@@ -1,0 +1,17 @@
+{
+    "name": "root/ods-php-generator",
+    "description": "desc",
+    "license": "LGPL v3",
+    "authors": [
+        {
+            "name": "Laurent VUIBERT",
+            "email": "lapinator@gmx.fr"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}

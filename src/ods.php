@@ -4,13 +4,7 @@
  * License : GNU Lesser General Public License v3
  */
 
-require_once("class/odsFontFace.php");
-require_once("class/odsStyle.php");
-require_once("class/odsTable.php");
-require_once("class/odsTableColumn.php");
-require_once("class/odsTableRow.php");
-require_once("class/odsTableCell.php");
-require_once("class/odsDraw.php");
+namespace  odsPhpGenerator;
 
 class ods {
 	private $defaultTable;
@@ -88,7 +82,7 @@ class ods {
 	}
 	
 	public function addTmpPictures($file) {
-		if(in_array($file,$this->tmpPictures)) return;
+		if(in_array($file,$this->tmpPictures)) return  $this->tmpPictures[$file];
 		$this->tmpPictures[$file] = "Pictures/".md5(time().rand()).'.png';
 		return $this->tmpPictures[$file];
 	}
@@ -124,7 +118,7 @@ class ods {
 		$this->tmpStyles = array();
 		$this->tmpPictures = array();
 		
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom = new \DOMDocument('1.0', 'UTF-8');
 		$root = $dom->createElement('office:document-content');
 			$root->setAttribute("xmlns:office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
 			$root->setAttribute("xmlns:style", "urn:oasis:names:tc:opendocument:xmlns:style:1.0");
@@ -198,7 +192,8 @@ class ods {
 	}
 	
 	public function getMeta() {
-		$dom = new DOMDocument('1.0', 'UTF-8');
+
+		$dom = new \DOMDocument('1.0', 'UTF-8');
 		
 		$root = $dom->createElement('office:document-meta');
 			$root->setAttribute("xmlns:office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
@@ -235,7 +230,7 @@ class ods {
 	}
 	
 	public function getSettings() {
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom = new \DOMDocument('1.0', 'UTF-8');
 		
 		$root = $dom->createElement('office:document-settings');
 			$root->setAttribute("xmlns:office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
@@ -542,7 +537,7 @@ class ods {
 	}
 
 	public function getStyles() {
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom = new \DOMDocument('1.0', 'UTF-8');
 		
 		$root = $dom->createElement('office:document-styles');
 			$root->setAttribute("xmlns:office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0");
@@ -893,7 +888,7 @@ class ods {
 	}
 	
 	private function getManifest() {
-		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom = new \DOMDocument('1.0', 'UTF-8');
 		$root = $dom->createElement('manifest:manifest');
 			$root->setAttribute("xmlns:manifest", "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0");
 			$dom->appendChild($root);
@@ -1161,9 +1156,9 @@ class ods {
 	}
 	
 	public function genOdsFile($file) {
-		$zip = new ZipArchive();
+		$zip = new \ZipArchive();
 		
-		if ($zip->open($file, ZIPARCHIVE::OVERWRITE)!==TRUE) {
+		if ($zip->open($file, \ZipArchive::OVERWRITE)!==TRUE) {
 		   exit("cannot open $file\n");
 		}
 		

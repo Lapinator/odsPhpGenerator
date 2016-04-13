@@ -3,6 +3,8 @@
  * Copyright (c) 2009 Laurent VUIBERT
  * License : GNU Lesser General Public License v3
  */
+
+namespace  odsPhpGenerator;
  
 abstract class odsDraw {
 	protected $styleGraphic;
@@ -10,7 +12,7 @@ abstract class odsDraw {
 	protected $tableBackground;  // "true", "false", null
 	
 	//abstract function __construct();
-	abstract function getContent(ods $ods, DOMDocument $dom);
+	abstract function getContent(ods $ods, \DOMDocument $dom);
 	abstract protected function getType();
 	
 	public function setZIndex($zIndex){
@@ -45,7 +47,7 @@ class odsDrawLine extends odsDraw {
 		$this->zIndex          = "0";		
 	}
 	
-	function getContent(ods $ods, DOMDocument $dom) {
+	function getContent(ods $ods, \DOMDocument $dom) {
 
 		if($this->styleGraphic)
 			$style = $this->styleGraphic;
@@ -116,7 +118,7 @@ class odsDrawRect extends odsDraw {
 		$this->zIndex          = "0";	
 	}
 	
-	function getContent(ods $ods, DOMDocument $dom) {
+	function getContent(ods $ods, \DOMDocument $dom) {
 		
 		if($this->styleGraphic)
 			$style = $this->styleGraphic;

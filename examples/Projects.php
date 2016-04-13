@@ -1,6 +1,15 @@
 <?php
 
-require_once("../ods.php");
+require_once "../vendor/autoload.php";
+
+use odsPhpGenerator\ods;
+use odsPhpGenerator\odsTable;
+use odsPhpGenerator\odsStyleTableColumn;
+use odsPhpGenerator\odsTableColumn;
+use odsPhpGenerator\odsStyleTableCell;
+use odsPhpGenerator\odsTableRow;
+use odsPhpGenerator\odsTableCellString;
+use odsPhpGenerator\odsTableCellEmpty;
 
 $projet = new project();
 $projet->addItem("2010-01-05", "2010-01-10", "#1", "#aaaaff");
@@ -212,7 +221,7 @@ class project {
 			}
 			
 			$styleX = clone($styleTitle2);
-			$styleX->setBackgroundColor($projet[color]);
+			$styleX->setBackgroundColor($projet['color']);
 			
 			$cell = new odsTableCellString($projet['title'],$styleX);
 			$cell->setNumberColumnsSpanned($projet['days']);

@@ -4,6 +4,8 @@
  * License : GNU Lesser General Public License v3
  */
 
+namespace  odsPhpGenerator;
+
 class odsTable {
 	private $name;
 	private $styleName;
@@ -114,7 +116,7 @@ class odsTable {
 		$this->positionBottom = $positionBottom;
 	}
 	
-	public function getContent(ods $ods, DOMDocument $dom) {
+	public function getContent(ods $ods, \DOMDocument $dom) {
 		$table_table = $dom->createElement('table:table');
 			$table_table->setAttribute("table:name", $this->name);
 			$table_table->setAttribute("table:style-name", $this->styleName);
@@ -149,7 +151,7 @@ class odsTable {
 		return $table_table;
 	}
 	
-	public function getSettings(ods $ods, DOMDocument $dom) {
+	public function getSettings(ods $ods, \DOMDocument $dom) {
 		$config_config_item_map_entry2 = $dom->createElement('config:config-item-map-entry');
 			$config_config_item_map_entry2->setAttribute("config:name", $this->name);
 			//$config_config_item_map_named->appendChild($config_config_item_map_entry2);

@@ -4,6 +4,8 @@
  * License : GNU Lesser General Public License v3
  */
 
+namespace  odsPhpGenerator;
+
 class odsFontFace {
 	private $fontName; // = "Nimbus Sans L";
 	private $fontFamilyGeneric;
@@ -15,7 +17,7 @@ class odsFontFace {
 		$this->fontPitch         = $fontPitch;
 	}
 	
-	public function getContent(ods $ods, DOMDocument $dom) {
+	public function getContent(ods $ods, \DOMDocument $dom) {
 		$style_font_face = $dom->createElement('style:font-face');
 			$style_font_face->setAttribute("style:name", $this->fontName);
 			$style_font_face->setAttribute("svg:font-family", "'".$this->fontName."'");
@@ -28,7 +30,7 @@ class odsFontFace {
 		return $this->fontName;
 	}
 	
-	public function getStyles(ods $ods, DOMDocument $dom) {
+	public function getStyles(ods $ods, \DOMDocument $dom) {
 		return $this->getContent($ods,$dom);
 	}
 }
