@@ -1,12 +1,17 @@
 {
-    "name": "root/ods-php-generator",
-    "description": "desc",
-    "license": "LGPL v3",
+    "name": "lapinator/ods-php-generator",
+    "type": "library",
+    "description": "Open Document Spreadsheet (.ods) generator ",
+    "keywords": ["ods","libreoffice"],
+    "homepage": "https://odsphpgenerator.lapinator.net/",
+    "license": "LGPL-3.0",
     "authors": [
-        {
-            "name": "Laurent VUIBERT",
-            "email": "lapinator@gmx.fr"
-        }
+      {
+        "name": "Laurent VUIBERT",
+        "email": "lapinator@gmx.fr",
+        "homepage": "http://lapinator.net",
+        "role": "Developer"
+      }
     ],
     "require": {
         "php": ">=5.3"
