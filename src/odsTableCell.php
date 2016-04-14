@@ -119,6 +119,7 @@ class odsTableCellStringEmail extends odsTableCellString {
 				// text:a
 				$text_a = $dom->createElement('text:a',$this->value);
 					$text_a->setAttribute("xlink:href", "mailto:".$this->value);
+					$text_a->setAttribute("xlink:type", "simple");
 					$text_p->appendChild($text_a);
 		return $table_table_cell;
 	}
@@ -137,6 +138,7 @@ class odsTableCellStringUrl extends odsTableCellString {
 				// text:a
 				$text_a = $dom->createElement('text:a',$this->value);
 					$text_a->setAttribute("xlink:href", (substr($this->value,0,7)=="http://"?'':"http://").$this->value);
+					$text_a->setAttribute("xlink:type", "simple");
 					$text_p->appendChild($text_a);
 		return $table_table_cell;
 	}
@@ -494,21 +496,21 @@ class odsTableCellImage extends odsTableCell {
 				//$draw_frame->setAttribute("table:end-cell-address", "Feuille1.AA85");
 				//$draw_frame->setAttribute("table:end-x", "1.27cm");
 				//$draw_frame->setAttribute("table:end-y", "0.472cm");
-				//$draw_frame->setAttribute("draw:z-index", $this->zIndex);
+				$draw_frame->setAttribute("draw:z-index", $this->zIndex);
 				$draw_frame->setAttribute("draw:name", "Images ".md5(time().rand()));
 				$draw_frame->setAttribute("draw:style-name", $style->getName());
 				$draw_frame->setAttribute("draw:text-style-name", "P1");
-				//$draw_frame->setAttribute("svg:width", $this->width);
-				//$draw_frame->setAttribute("svg:height", $this->height);
-				//$draw_frame->setAttribute("svg:x", $this->x);
-				//$draw_frame->setAttribute("svg:y", $this->y);
+				$draw_frame->setAttribute("svg:width", $this->width);
+				$draw_frame->setAttribute("svg:height", $this->height);
+				$draw_frame->setAttribute("svg:x", $this->x);
+				$draw_frame->setAttribute("svg:y", $this->y);
 				$table_table_cell->appendChild($draw_frame);
 				
 				$draw_image = $dom->createElement('draw:image');
 					$draw_image->setAttribute("xlink:href", $ods->addTmpPictures($this->file));
-					//$draw_image->setAttribute("xlink:type", "simple");
-					//$draw_image->setAttribute("xlink:show", "embed");
-					//$draw_image->setAttribute("xlink:actuate", "onLoad");
+					$draw_image->setAttribute("xlink:type", "simple");
+					$draw_image->setAttribute("xlink:show", "embed");
+					$draw_image->setAttribute("xlink:actuate", "onLoad");
 					$draw_frame->appendChild($draw_image);
 					
 					$text_p = $dom->createElement('text:p');

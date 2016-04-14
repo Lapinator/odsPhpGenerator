@@ -891,6 +891,7 @@ class ods {
 		$dom = new \DOMDocument('1.0', 'UTF-8');
 		$root = $dom->createElement('manifest:manifest');
 			$root->setAttribute("xmlns:manifest", "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0");
+			$root->setAttribute("manifest:version","1.2");
 			$dom->appendChild($root);
 		
 			$manifest_file_entry = $dom->createElement("manifest:file-entry");
@@ -898,6 +899,13 @@ class ods {
 				$manifest_file_entry->setAttribute("manifest:version", "1.2");
 				$manifest_file_entry->setAttribute("manifest:full-path", "/");
 				$root->appendChild($manifest_file_entry);
+
+			foreach ($this->tmpPictures AS $pictures) {
+				$manifest_file_entry = $dom->createElement("manifest:file-entry");
+				$manifest_file_entry->setAttribute("manifest:full-path", $pictures);
+				$manifest_file_entry->setAttribute("manifest:media-type", "image/png");
+				$root->appendChild($manifest_file_entry);
+			}
 			
 			$manifest_file_entry = $dom->createElement("manifest:file-entry");
 				$manifest_file_entry->setAttribute("manifest:media-type", "text/xml");
@@ -921,57 +929,7 @@ class ods {
 
 			$manifest_file_entry = $dom->createElement("manifest:file-entry");
 				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Thumbnails/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
 				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/accelerator/current.xml");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/accelerator/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/progressbar/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/floater/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/popupmenu/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/menubar/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/toolbar/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/images/Bitmaps/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/images/");
-				$root->appendChild($manifest_file_entry);
-
-			$manifest_file_entry = $dom->createElement("manifest:file-entry");
-				$manifest_file_entry->setAttribute("manifest:media-type", "");
-				$manifest_file_entry->setAttribute("manifest:full-path", "Configurations2/statusbar/");
 				$root->appendChild($manifest_file_entry);
 
 			$manifest_file_entry = $dom->createElement("manifest:file-entry");
@@ -1161,16 +1119,18 @@ class ods {
 		if ($zip->open($file, \ZipArchive::OVERWRITE)!==TRUE) {
 		   exit("cannot open $file\n");
 		}
-		
+
+		$zip->addFromString("mimetype", $this->getMimeType());
 		$zip->addFromString("meta.xml", $this->getMeta());
 		$zip->addFromString("content.xml", $this->getContent());
-		$zip->addFromString("mimetype", $this->getMimeType());
 		$zip->addFromString("settings.xml", $this->getSettings());
 		$zip->addFromString("styles.xml", $this->getStyles());
 		$zip->addFromString("Configurations2/accelerator/current.xml", $this->getAcceleratorCurrent());
 		$zip->addFromString("META-INF/manifest.xml", $this->getManifest());
 		$zip->addFromString("Thumbnails/thumbnail.png", $this->getThumbnail());
-		
+
+		//$zip->setCompressionIndex(0, \ZipArchive::CM_STORE);
+
 		foreach($this->tmpPictures AS $imgfile => $name)
 			$zip->addFile($imgfile,$name);
 		
