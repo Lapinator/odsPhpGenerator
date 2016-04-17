@@ -7,25 +7,57 @@
 namespace  odsPhpGenerator;
 
 class ods {
-	private $defaultTable;
-	
-	private $scripts;        // FIXME: Looking
-	private $fontFaces;
-	private $styles;
-	private $tmpStyles;
-	private $tmpPictures;
-	private $tables;
-	
-	private $title;
-	private $subject;
-	private $keyword;
-	private $description;
-	
+	protected $defaultTable;
+
+	protected $scripts;        // FIXME: Looking
+	protected $fontFaces;
+	protected $styles;
+	protected $tmpStyles;
+	protected $tmpPictures;
+	protected $tables;
+
+	protected $title;
+	protected $subject;
+	protected $keyword;
+	protected $description;
+
+	protected $pageWidth;
+	protected $pageHeight;
+
+	protected $pageMarginTop;
+	protected $pageMarginBottom;
+	protected $pageMarginLeft;
+	protected $pageMarginRight;
+
+	protected $pageTableCentering; // null, horizontal, vertical or both
+
+	protected $pageHeaderDisplay;
+	protected $pageFooterDisplay;
+
+	const PAGE_A6 = 'A6';
+	const PAGE_A5 = 'A5';
+	const PAGE_A4 = 'A4';
+	const PAGE_A3 = 'A3';
+
+	const PAGE_PORTRAIT = 'portrait';
+	const PAGE_LANDSCAPE = 'landscape';
+
+	const PAGE_TABLE_CENTERING_DEFAULT = null;
+	const PAGE_TABLE_CENTERING_HORIZONTAL = 'horizontal';
+	const PAGE_TABLE_CENTERING_VERTICAL = 'vertical';
+	const PAGE_TABLE_CENTERING_BOTH = 'both';
+
 	public function __construct() {
 		$this->title         = null;
 		$this->subject       = null;
 		$this->keyword       = null;
 		$this->description   = null;
+
+		$this->setPageFormat(self::PAGE_A4, self::PAGE_PORTRAIT);
+		$this->setPagesMargins(null,null,null,null);
+		$this->setPageHeaderDisplay(true);
+		$this->setPageFooterDisplay(true);
+
 		$this->path2OdsFiles = ".";
 		
 		$this->defaultTable = null;
@@ -60,7 +92,136 @@ class ods {
 	public function setDescription($description) {
 		$this->description = $description;
 	}
-	
+
+	/**
+	 * Define format of the document
+	 *
+	 * @param string $format A6,A5,A4,A3
+	 * @param string $orientation in portrait or landscape
+	 * @throws \Exception
+	 */
+	public function setPageFormat($format, $orientation = self::PAGE_PORTRAIT) {
+		switch($format){
+			case self::PAGE_A6: $width = '105mm'; $height = '148mm'; break;
+			case self::PAGE_A5: $width = '148mm'; $height = '210mm'; break;
+			case self::PAGE_A4: $width = '210mm'; $height = '297mm'; break;
+			case self::PAGE_A3: $width = '297mm'; $height = '420mm'; break;
+			default: throw new \Exception('Format not found');
+		}
+
+		if($orientation == self::PAGE_LANDSCAPE) $this->setPageDimention($height, $width);
+		else $this->setPageDimention($width, $height);
+	}
+
+	/**
+	 * Define width and height of Page
+	 *
+	 * @param string $width
+	 * @param string $height
+	 */
+	public function setPageDimention($width, $height) {
+		$this->pageWidth = $width;
+		$this->pageHeight = $height;
+	}
+
+	/**
+	 * Set width of page
+	 *
+	 * @param string $width ex 2cm or 20mm
+	 */
+	public function setPageWidth($width) {
+		$this->pageWidth = $width;
+	}
+
+	/**
+	 * Set height of page
+	 *
+	 * @param string $height ex 2cm or 20mm
+	 */
+	public function setPageHeight($height) {
+		$this->pageHeight = $height;
+	}
+
+	/**
+	 * Set margins of the page
+	 *
+	 * @param string|null $top    ex 2cm or 20mm
+	 * @param string|null $right  ex 2cm or 20mm
+	 * @param string|null $bottom ex 2cm or 20mm
+	 * @param string|null $left   ex 2cm or 20mm
+	 */
+	public function setPagesMargins($top = '20mm', $right = '20mm', $bottom = '20mm', $left = '20mm') {
+		$this->pageMarginTop    = $top;
+		$this->pageMarginRight  = $right;
+		$this->pageMarginBottom = $bottom;
+		$this->pageMarginLeft   = $left;
+	}
+
+	/**
+	 * Set Top Margin
+	 *
+	 * @param string|null $top
+	 */
+	public function setPageMarginTop($top) {
+		$this->pageMarginTop = $top;
+	}
+
+	/**
+	 * Set Bottom Margin
+	 *
+	 * @param string|null $bottom
+	 */
+	public function setPageMarginBottom($bottom) {
+		$this->pageMarginBottom = $bottom;
+	}
+
+	/**
+	 * Set Left Margin
+	 *
+	 * @param string|null $left
+	 */
+	public function setPageMarginLeft($left) {
+		$this->pageMarginLeft = $left;
+	}
+
+	/**
+	 * Set Right Margin
+	 *
+	 * @param string|null $right
+	 */
+	public function setPageMarginRight($right) {
+		$this->pageMarginRight = $right;
+	}
+
+	/**
+	 * Page centering
+	 *
+	 * @param string|null $centering
+	 */
+	public function setPageTableCentering( $centering ) {
+		$this->pageTableCentering = $centering;
+	}
+
+	/**
+	 * Display footer in print
+	 *
+	 * @param bool $display
+	 */
+	public function setPageHeaderDisplay($display) {
+		$this->pageHeaderDisplay = $display;
+	}
+
+	/**
+	 * Display footer in print
+	 *
+	 * @param bool $display
+	 */
+	public function setPageFooterDisplay($display) {
+		$this->pageFooterDisplay = $display;
+	}
+
+
+
 	// Deprecated
 	public function setPath2OdsFiles($path) {}
 	
@@ -713,6 +874,17 @@ class ods {
 				
 					$style_page_layout_properties = $dom->createElement('style:page-layout-properties');
 						$style_page_layout_properties->setAttribute("style:writing-mode", "lr-tb");
+						$style_page_layout_properties->setAttribute('fo:page-width', $this->pageWidth);
+						$style_page_layout_properties->setAttribute('fo:page-height', $this->pageHeight);
+						if($this->pageWidth >  $this->pageHeight)
+							$style_page_layout_properties->setAttribute('style:print-orientation','landscape');
+						else
+							$style_page_layout_properties->setAttribute('style:print-orientation','portrait');
+						if($this->pageMarginTop)    $style_page_layout_properties->setAttribute('fo:margin-top', $this->pageMarginTop);
+						if($this->pageMarginBottom)	$style_page_layout_properties->setAttribute('fo:margin-bottom', $this->pageMarginBottom);
+						if($this->pageMarginLeft)	$style_page_layout_properties->setAttribute('fo:margin-left', $this->pageMarginLeft);
+						if($this->pageMarginRight)	$style_page_layout_properties->setAttribute('fo:margin-right', $this->pageMarginRight);
+						if($this->pageTableCentering)	$style_page_layout_properties->setAttribute('style:table-centering', $this->pageTableCentering);
 						$style_page_layout->appendChild($style_page_layout_properties);
 					
 					$style_header_style = $dom->createElement('style:header-style');
@@ -784,6 +956,7 @@ class ods {
 					$office_master_styles->appendChild($style_master_page);
 
 					$style_header = $dom->createElement('style:header');
+						if(!$this->pageHeaderDisplay) $style_header->setAttribute('style:display', 'false');
 						$style_master_page->appendChild($style_header);
 
 						$text_p = $dom->createElement('text:p');
@@ -797,6 +970,7 @@ class ods {
 						$style_master_page->appendChild($style_header_left);
 
 					$style_footer = $dom->createElement('style:footer');
+						if(!$this->pageFooterDisplay) $style_footer->setAttribute('style:display', 'false');
 						$style_master_page->appendChild($style_footer);
 						
 						$text_p = $dom->createElement('text:p', "Page");
@@ -1115,5 +1289,3 @@ class ods {
 	}
 
 }
- 
-?>
