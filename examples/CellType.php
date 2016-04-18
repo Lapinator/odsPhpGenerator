@@ -105,7 +105,7 @@ $table->addRow($row);
 // Image cell
 $row   = new odsTableRow();
 $row->addCell( new odsTableCellString("Image cell") );
-$row->addCell( new odsTableCellImage("logo.png") );
+$row->addCell( new odsTableCellImage("imgs/logo.png") );
 $table->addRow($row);
 
 $ods->addTable($table);

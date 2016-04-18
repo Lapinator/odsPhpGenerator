@@ -74,7 +74,7 @@ class ods {
 		$this->addStyles( new odsStyleTable("ta1") );
 		$this->addStyles( new odsStyleTableRow("ro1") );
 		$this->addStyles( new odsStyleTableCell("ce1") );
-		
+
 	}
 	
 	public function setTitle($title) {
@@ -244,7 +244,7 @@ class ods {
 	
 	public function addTmpPictures($file) {
 		if(in_array($file,$this->tmpPictures)) return  $this->tmpPictures[$file];
-		$this->tmpPictures[$file] = "Pictures/".md5(time().rand()).'.png';
+		$this->tmpPictures[$file] = "Pictures/".md5(time().rand()).strrchr($file,'.');
 		return $this->tmpPictures[$file];
 	}
 	
@@ -1062,6 +1062,15 @@ class ods {
 	}
 	
 	private function getManifest() {
+		$mime = [
+			'.png' => 'image/png',
+			'.jpg' => 'image/jpeg',
+			'.gif' => 'image/gif',
+			'.svg' => 'image/svg',
+			'.tiff' => 'image/tiff',
+		];
+
+
 		$dom = new \DOMDocument('1.0', 'UTF-8');
 		$root = $dom->createElement('manifest:manifest');
 			$root->setAttribute("xmlns:manifest", "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0");
@@ -1074,10 +1083,14 @@ class ods {
 				$manifest_file_entry->setAttribute("manifest:full-path", "/");
 				$root->appendChild($manifest_file_entry);
 
-			foreach ($this->tmpPictures AS $pictures) {
+			foreach ($this->tmpPictures AS $k => $pictures) {
 				$manifest_file_entry = $dom->createElement("manifest:file-entry");
 				$manifest_file_entry->setAttribute("manifest:full-path", $pictures);
-				$manifest_file_entry->setAttribute("manifest:media-type", "image/png");
+
+				$ext = strrchr($k,'.');
+				if(!isset($mime[$ext])) throw new \Exception($ext." ($k) not supported");
+
+				$manifest_file_entry->setAttribute("manifest:media-type", $mime[$ext]);
 				$root->appendChild($manifest_file_entry);
 			}
 			
