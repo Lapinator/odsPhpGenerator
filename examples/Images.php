@@ -4,8 +4,6 @@
 
 use odsPhpGenerator\ods;
 use odsPhpGenerator\odsTable;
-use odsPhpGenerator\odsTableRow;
-use odsPhpGenerator\odsTableCellString;
 
 // Load library
 require_once '../vendor/autoload.php';

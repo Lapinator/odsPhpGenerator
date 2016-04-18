@@ -47,6 +47,11 @@ class ods {
 	const PAGE_TABLE_CENTERING_VERTICAL = 'vertical';
 	const PAGE_TABLE_CENTERING_BOTH = 'both';
 
+	const OUTPUT_ODS  = 'ods';
+	const OUTPUT_PDF  = 'pdf';
+	const OUTPUT_XLS  = 'XLS';
+	const OUTPUT_XLSX = 'XLSX';
+
 	public function __construct() {
 		$this->title         = null;
 		$this->subject       = null;
@@ -1268,10 +1273,12 @@ class ods {
 			KIqiKIqiKIqiKIqiKIqiKK2Z/wV3uZLE0YJkYAAAAABJRU5ErkJggg==");
 	}
 	
-	public function genOdsFile($file) {
+	public function genOdsFile($file, $output = self::OUTPUT_ODS) {
 		$zip = new \ZipArchive();
-		
-		if ($zip->open($file, \ZipArchive::OVERWRITE)!==TRUE) {
+
+		$tmpfile = tempnam("/tmp", "odsPhpGenerator");
+
+		if ($zip->open($tmpfile, \ZipArchive::OVERWRITE)!==TRUE) {
 		   exit("cannot open $file\n");
 		}
 
@@ -1284,19 +1291,51 @@ class ods {
 		$zip->addFromString("META-INF/manifest.xml", $this->getManifest());
 		$zip->addFromString("Thumbnails/thumbnail.png", $this->getThumbnail());
 
-		//$zip->setCompressionIndex(0, \ZipArchive::CM_STORE);
+		if(method_exists($zip, 'setCompressionName'))
+			$zip->setCompressionName('mimetype', \ZipArchive::CM_STORE);
 
 		foreach($this->tmpPictures AS $imgfile => $name)
 			$zip->addFile($imgfile,$name);
 		
 		$zip->close();
+
+		switch($output) {
+			case self::OUTPUT_ODS:
+				copy($tmpfile, $file);
+				unlink($tmpfile);
+				return;
+			case self::OUTPUT_PDF:
+				exec('libreoffice --convert-to pdf --outdir /tmp '.$tmpfile, $ouput, $r);
+				unlink($tmpfile);
+				if($r) throw new \Exception('Error generate pdf file');
+				rename($tmpfile.'.pdf',$file);
+				return;
+			case self::OUTPUT_XLS:
+				exec('libreoffice --convert-to xls --outdir /tmp '.$tmpfile, $ouput, $r);
+				unlink($tmpfile);
+				if($r) throw new \Exception('Error generate xls file');
+				rename($tmpfile.'.xls',$file);
+				return;
+			case self::OUTPUT_XLSX:
+				exec('libreoffice --convert-to xlsx --outdir /tmp '.$tmpfile, $ouput, $r);
+				unlink($tmpfile);
+				if($r) throw new \Exception('Error generate xlsx file');
+				rename($tmpfile.'.xlsx',$file);
+				return;
+		}
 	}
 	
-	public function downloadOdsFile($fileName) {
-		header('Content-type: application/vnd.oasis.opendocument.spreadsheet');
+	public function downloadOdsFile($fileName, $output = self::OUTPUT_ODS) {
+		switch ($output) {
+			case self::OUTPUT_ODS:  header('Content-type: application/vnd.oasis.opendocument.spreadsheet'); break;
+			case self::OUTPUT_PDF:  header('Content-type: application/pdf'); break;
+			case self::OUTPUT_XLS:  header('Content-type: application/application/excel'); break;
+			case self::OUTPUT_XLSX: header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); break;
+		}
+
 		header('Content-Disposition: attachment; filename="'.$fileName.'"');
-		$tmpfile = tempnam("tmp", "genods");
-		$this->genOdsFile($tmpfile);
+		$tmpfile = tempnam("/tmp", "odsPhpGenerator");
+		$this->genOdsFile($tmpfile, $output);
 		readfile($tmpfile);
 		unlink($tmpfile);
 	}
