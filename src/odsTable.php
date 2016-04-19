@@ -68,8 +68,22 @@ class odsTable {
 		array_push($this->shapes, $odsDraw);
 	}
 	
-	public function addRow($odsTableRow) {
-		array_push($this->rows,$odsTableRow);
+	public function addRow($odsTableRow = null) {
+		if(empty($odsTableRow))
+			$this->rows[] = new odsTableRow();
+		elseif(is_array($odsTableRow)) {
+			$row = new odsTableRow();
+			foreach ($odsTableRow as $cell)
+				$row->addCell($cell);
+			$this->rows[] = $row;
+		}
+		elseif(is_a($odsTableRow, odsTableRow::class))
+			$this->rows[] = $odsTableRow;
+	}
+
+	public function addRows($rows) {
+		foreach ($rows as $row)
+			$this->addRow($row);
 	}
 	
 	public function addTableColumn($odsTableColumn) {

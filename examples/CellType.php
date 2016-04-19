@@ -32,24 +32,29 @@ $table->addRow($row);
 $row   = new odsTableRow();
 $row->addCell( new odsTableCellString("String cell") );
 $row->addCell( new odsTableCellString("String in my cell") );
+$row->addCell( "Direct String" );
 $table->addRow($row);
 
 // Email cell
 $row   = new odsTableRow();
 $row->addCell( new odsTableCellString("Email cell") );
 $row->addCell( new odsTableCellStringEmail("lapinator@gmx.fr") );
+$row->addCell( "lapinator@gmx.fr" );
 $table->addRow($row);
 
 // Url cell
 $row   = new odsTableRow();
 $row->addCell( new odsTableCellString("Url cell") );
 $row->addCell( new odsTableCellStringUrl("http://odsphpgenerator.lapinator.net") );
+$row->addCell( "http://odsphpgenerator.lapinator.net" );
+$row->addCell( "https://odsphpgenerator.lapinator.net" );
 $table->addRow($row);
 
 // Foat cell
 $row   = new odsTableRow();
 $row->addCell( new odsTableCellString("Float cell") );
 $row->addCell( new odsTableCellFloat(5.216) );
+$row->addCell( 3.25 );
 $table->addRow($row);
 
 // Date cell
@@ -107,6 +112,13 @@ $row   = new odsTableRow();
 $row->addCell( new odsTableCellString("Image cell") );
 $row->addCell( new odsTableCellImage("imgs/logo.png") );
 $table->addRow($row);
+
+// Add empty row
+for($i=0; $i<7; $i++)
+	$table->addRow();
+
+// Add easy Cells
+$table->addRow(['A','Little', 'Test', 55.24, 'lapinator@gmx.fr']);
 
 $ods->addTable($table);
 // Download the file

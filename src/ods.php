@@ -259,9 +259,19 @@ class ods {
 		return null; 
 	}
 	
-	public function addTable(odsTable $odsTable) {
-		if(in_array($odsTable,$this->tables)) return;
-		$this->tables[$odsTable->getName()] = $odsTable;
+	public function addTable($odsTable, $data=null) {
+		if(is_a($odsTable, odsTable::class)) {
+			if(in_array($odsTable,$this->tables)) return;
+			$this->tables[$odsTable->getName()] = $odsTable;
+		}
+
+		if(is_string($odsTable) AND is_array($data)) {
+			$table = new odsTable($odsTable);
+			foreach ($data AS $d) {
+				$table->addRow($d);
+			}
+			$this->addTable($table);
+		}
 	}
 	
 	public function setDefaultTable(odsTable $odsTable) {

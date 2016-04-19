@@ -15,9 +15,19 @@ class odsTableRow {
 		else                  $this->styleName = "ro1";
 		$this->cells                           = array();
 	}
-	
-	public function addCell(odsTableCell $odsTableCell) {
-		array_push($this->cells,$odsTableCell);
+
+	// odsTableCell
+	public function addCell($odsTableCell) {
+		if(is_a($odsTableCell, odsTableCell::class))
+			$this->cells[] = $odsTableCell;
+		elseif(preg_match('/^http(s?):\/\//', $odsTableCell))
+			$this->cells[] = new odsTableCellStringUrl($odsTableCell);
+		elseif(preg_match('/^[0-9a-zA-Z\.\-\_]+@[0-9a-zA-Z\-\_\.]+$/', $odsTableCell))
+			$this->cells[] = new odsTableCellStringEmail($odsTableCell);
+		elseif(is_float($odsTableCell) OR is_int($odsTableCell))
+			$this->cells[] = new odsTableCellFloat($odsTableCell);
+		elseif(is_string($odsTableCell))
+			$this->cells[] = new odsTableCellString($odsTableCell);
 	}
 	
 	public function getContent(ods $ods, \DOMDocument $dom) {
