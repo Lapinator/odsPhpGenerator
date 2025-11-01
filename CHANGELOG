@@ -1,20 +1,19 @@
-Version 0.0.5
-- Fix: php warnig
-- Add: percentage
-
-Version 0.0.4
+Version v0.0.4
 - Images in table
 - Add page format AND print options
 - Export to PDF, XLS, XSLX
 - Easy Ods
+- Fix: php warnig
+- Add: percentage
 
-Version 0.0.3
+
+Version v0.0.3
 - Use composer
 - Move source to github.com
 - Add pakagist
 - Fix Bugs
 
-Version 0.0.2
+Version v0.0.2
 - DEL: ods->setPath2OdsFiles().
 - ADD: Date cell, time cell and datetime cell
 - ADD: Merge cell
@@ -22,7 +21,7 @@ Version 0.0.2
 - ADD: fonts
 - ADD: examples
 
-Version 0.0.1.
+Version v0.0.1.
 - First version
 - GPL V3
 - Create and insert Cell
