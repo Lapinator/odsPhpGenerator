@@ -1404,6 +1404,36 @@ class odsStyleMoneyGBPNeg extends odsStyleMoney {
 	}
 }
 
+
+class odslStylePercentage extends odsStyle {
+	private $language;
+
+	public function __construct($language) {
+		$this->name='percentage';
+		$this->language = $language;
+	}
+
+	public function getContent(ods $ods, \DOMDocument $dom) {
+		$number_percentage_style = $dom->createElement('number:percentage-style');
+			$number_percentage_style->setAttribute('style:name', $this->name);
+
+			$number_number = $dom->createElement('number:number');
+			$number_number->setAttribute('number:decimal-places', '2');
+			$number_number->setAttribute('number:min-decimal-places', '2');
+			$number_number->setAttribute('number:min-integer-digits', '1');
+			$number_percentage_style->appendChild($number_number);
+
+			$number_text = $dom->createElement('number:text', ' %');
+			$number_percentage_style->appendChild($number_text);
+
+		return $number_percentage_style;
+	}
+
+	public function getType() {
+		return 'odslStylePercentage';
+	}
+}
+
 abstract class odsStyleDate extends odsStyle {
 	protected $language;
 	

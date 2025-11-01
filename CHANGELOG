@@ -1,3 +1,7 @@
+Version 0.0.5
+- Fix: php warnig
+- Add: percentage
+
 Version 0.0.4
 - Images in table
 - Add page format AND print options

@@ -230,6 +230,53 @@ class odsTableCellCurrency extends odsTableCell {
 	}
 }
 
+class odsTableCellPercentage extends odsTableCell {
+	public $value;
+
+	public function __construct($value, $language=null, $odsStyleTableCell = null) {
+		$this->value    = $value;
+		$this->styleName = $odsStyleTableCell;
+	}
+
+	public function getContent(ods $ods, \DOMDocument $dom) {
+		$tmpStyle = $ods->addTmpStyles(new odslStylePercentage(null));
+
+		$table_table_cell = $dom->createElement('table:table-cell');
+
+		$this->cellOpts($table_table_cell);
+			if( $this->styleName ) {
+				$style = $ods->getStyleByName($this->styleName->getName());
+				if(!$style) {
+					$style = clone $ods->getStyleByName("ce1");
+					$style->setName("ce1-percentage");
+					$style->setStyleDataName('percentage');
+					$ods->addTmpStyles($style);
+				}
+				$table_table_cell->setAttribute("table:style-name", $style->getName());
+			} else {
+				$style = $ods->getStyleByName("ce1-percentage");
+				if(!$style) {
+					$style = clone $ods->getStyleByName("ce1");
+					$style->setName("ce1-percentage");
+					$style->setStyleDataName('percentage');
+					$ods->addTmpStyles($style);
+				}
+				$table_table_cell->setAttribute("table:style-name", $style->getName());
+			}
+
+			$table_table_cell->setAttribute("office:value-type", "percentage");
+			$table_table_cell->setAttribute("calcext:value-type", "percentage");
+			$table_table_cell->setAttribute("office:value", (float)$this->value);
+
+			// text:p
+			$text_p = $dom->createElement('text:p', number_format((float)$this->value, 2) . ' %');
+				$table_table_cell->appendChild($text_p);
+
+		return $table_table_cell;
+	}
+}
+
+
 class odsTableCellDate extends odsTableCell {
 	private $date;
 	private $format;
@@ -248,31 +295,31 @@ class odsTableCellDate extends odsTableCell {
 			$ods->addTmpStyles(new odsStyleDateDDMMYYYY($this->language));
 			break;
 		case 'DDMMYY':
-			$ods->addTmpStyles($style = new odsStyleDateDDMMYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateDDMMYY($this->language));
 			break;
 		case 'MMDDYYYY':
-			$ods->addTmpStyles($style = new odsStyleDateMMDDYYYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateMMDDYYYY($this->language));
 			break;
 		case 'MMDDYY':
-			$ods->addTmpStyles($style = new odsStyleDateMMDDYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateMMDDYY($this->language));
 			break;
 		case 'DMMMYYYY':
-			$ods->addTmpStyles($style = new odsStyleDateDMMMYYYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateDMMMYYYY($this->language));
 			break;
 		case 'DMMMYY':
-			$ods->addTmpStyles($style = new odsStyleDateDMMMYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateDMMMYY($this->language));
 			break;
 		case 'DMMMMYYYY':
-			$ods->addTmpStyles($style = new odsStyleDateDMMMMYYYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateDMMMMYYYY($this->language));
 			break;
 		case 'DMMMMYY':
-			$ods->addTmpStyles($style = new odsStyleDateDMMMMYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateDMMMMYY($this->language));
 			break;
 		case 'MMMDYYYY':
-			$ods->addTmpStyles($style = new odsStyleDateMMMDYYYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateMMMDYYYY($this->language));
 			break;
 		case 'MMMDYY':
-			$ods->addTmpStyles($style = new odsStyleDateMMMDYY($this->language));
+			$ods->addTmpStyles(new odsStyleDateMMMDYY($this->language));
 			break;
 		default:
 			//FIXME: send error;
@@ -368,6 +415,7 @@ class odsTableCellTime extends odsTableCell {
 class odsTableCellDateTime extends odsTableCell {
 	private $dateTime;
 	private $format;
+	private $language;
 
 	public function __construct($dateTime, $format="MMDDYYHHMMAMPM", $language=null, odsStyleGraphic $odsStyleCellDate = null) {
 		$this->dateTime = $dateTime;

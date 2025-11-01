@@ -34,6 +34,8 @@ class ods {
 	protected $pageHeaderDisplay;
 	protected $pageFooterDisplay;
 
+	protected $path2OdsFiles;
+
 	const PAGE_A6 = 'A6';
 	const PAGE_A5 = 'A5';
 	const PAGE_A4 = 'A4';
@@ -304,6 +306,7 @@ class ods {
 			$root->setAttribute("xmlns:fo", "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0");
 			$root->setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 			$root->setAttribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+			$root->setAttribute("xmlns:calcext", "urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0");
 			$root->setAttribute("xmlns:meta", "urn:oasis:names:tc:opendocument:xmlns:meta:1.0");
 			$root->setAttribute("xmlns:number", "urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0");
 			$root->setAttribute("xmlns:presentation", "urn:oasis:names:tc:opendocument:xmlns:presentation:1.0");
@@ -1288,7 +1291,7 @@ class ods {
 
 		$tmpfile = tempnam("/tmp", "odsPhpGenerator");
 
-		if ($zip->open($tmpfile, \ZipArchive::OVERWRITE)!==TRUE) {
+		if ($zip->open($tmpfile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)!==TRUE) {
 		   exit("cannot open $file\n");
 		}
 

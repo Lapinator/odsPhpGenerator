@@ -10,6 +10,7 @@ use odsPhpGenerator\odsTableCellEmpty;
 use odsPhpGenerator\odsTableCellStringEmail;
 use odsPhpGenerator\odsTableCellStringUrl;
 use odsPhpGenerator\odsTableCellFloat;
+use odsPhpGenerator\odsTableCellPercentage;
 use odsPhpGenerator\odsTableCellDate;
 use odsPhpGenerator\odsTableCellTime;
 use odsPhpGenerator\odsTableCellDateTime;
@@ -54,8 +55,16 @@ $table->addRow($row);
 $row   = new odsTableRow();
 $row->addCell( new odsTableCellString("Float cell") );
 $row->addCell( new odsTableCellFloat(5.216) );
-$row->addCell( 3.25 );
+$row->addCell( 5.216 );
 $table->addRow($row);
+
+// percentage cell
+$row   = new odsTableRow();
+$row->addCell( new odsTableCellString("Percentage cell") );
+$row->addCell( new odsTableCellPercentage(0.54) );
+$row->addCell( 0.54 );
+$table->addRow($row);
+
 
 // Date cell
 $row   = new odsTableRow();
